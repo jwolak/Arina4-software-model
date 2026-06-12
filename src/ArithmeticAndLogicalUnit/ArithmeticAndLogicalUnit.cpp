@@ -46,6 +46,13 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
+            // try {
+            //     AluRequest req = payload.get<AluRequest>();
+            //     AluResponse resp = alu_engine_.Execute(req);
+            //     herkus_bus_.Publish(Common::HerkusBusTopics::kAluResponseTopic, nlohmann::json(resp));
+            // } catch (const std::exception& e) {
+            //     spdlog::error("Error processing ALU request: {}", e.what());
+            // }
         });
 
         is_initialized_ = true;
