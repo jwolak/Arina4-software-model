@@ -125,6 +125,7 @@ message(STATUS "Set source directory: " ${PROJECT_SRC_DIR})
 #-------------------------------------------------------------------------------
 set (SOURCE_LIST
 	${PROJECT_SRC_DIR}/main.cpp
+    ${PROJECT_SRC_DIR}/ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)
