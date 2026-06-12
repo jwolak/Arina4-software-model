@@ -35,6 +35,8 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() {}
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : herkus_bus_(Herkus::HerkusBus::getInstance()) {
+        spdlog::info("ArithmeticAndLogicalUnit initialized and connected to HerkusBus");
+    }
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
