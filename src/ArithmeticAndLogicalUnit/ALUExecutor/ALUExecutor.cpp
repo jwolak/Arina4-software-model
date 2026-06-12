@@ -32,13 +32,13 @@
 
 #include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 
-#include "Common/ALU/AluResponseMessage.h"
+#include "Common/ALU/AluReplyMessage.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    Common::ALU::AluResponse ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
+    Common::ALU::AluReplyMessage ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
         spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
 
-        return Common::ALU::AluResponse{};
+        return Common::ALU::AluReplyMessage{};
     }
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

@@ -33,12 +33,12 @@
 #pragma once
 
 #include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluResponseMessage.h"
+#include "Common/ALU/AluReplyMessage.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
     class ALUExecutor : public IALUExecutor {
       public:
         ALUExecutor() = default;
-        Common::ALU::AluResponse Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
     };
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

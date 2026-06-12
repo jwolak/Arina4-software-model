@@ -32,7 +32,7 @@
 
 #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 
-#include "ALUExecutor/ALUExecutor.h"
+#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 #include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 

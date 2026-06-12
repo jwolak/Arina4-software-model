@@ -32,7 +32,7 @@
 
 #pragma once
 
-#include "ALUExecutor/ALUExecutor.h"
+#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 #include "HerkusBus.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
