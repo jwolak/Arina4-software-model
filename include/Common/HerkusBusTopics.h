@@ -30,25 +30,8 @@
  *
  */
 
-#include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
+#pragma once
 
-#include "Common/HerkusBusTopics.h"
-#include "spdlog/spdlog.h"
-
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : herkus_bus_(Herkus::HerkusBus::getInstance()) {
-        spdlog::info("ArithmeticAndLogicalUnit initialized and connected to HerkusBus");
-    }
-
-    bool ArithmeticAndLogicalUnit::Initialize() {
-        spdlog::info("ArithmeticAndLogicalUnit Initialize called");
-
-        spdlog::info("Subscribe to the ALU topic on the HerkusBus");
-        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
-            spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
-        });
-
-        return true;
-    }
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+namespace Arina4SoftwareModel::Common::HerkusBusTopics {
+    constexpr const char* kAluTopic = "AluTopic";
+}  // namespace Arina4SoftwareModel::Common::HerkusBusTopics

@@ -39,6 +39,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
     class ArithmeticAndLogicalUnit {
       public:
         ArithmeticAndLogicalUnit();
+        bool Initialize();
 
       private:
         Herkus::HerkusBus& herkus_bus_;
