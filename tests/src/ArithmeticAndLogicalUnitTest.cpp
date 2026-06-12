@@ -30,20 +30,16 @@
  *
  */
 
-#pragma once
+#include <gtest/gtest.h>
 
-#include "HerkusBus.h"
+#include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+namespace arithmetic_and_logical_unit_test {
 
-    class ArithmeticAndLogicalUnit {
+    using namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit;
+
+    class ArithmeticAndLogicalUnitTest : public ::testing::Test {
       public:
-        ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      private:
-        Herkus::HerkusBus& herkus_bus_;
-        bool is_initialized_;
+        ArithmeticAndLogicalUnitTest() {}
     };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+}  // namespace arithmetic_and_logical_unit_test

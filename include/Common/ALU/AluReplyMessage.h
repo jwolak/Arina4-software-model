@@ -32,18 +32,16 @@
 
 #pragma once
 
-#include "HerkusBus.h"
+#include <cstdint>
+#include <string>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-
-    class ArithmeticAndLogicalUnit {
-      public:
-        ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      private:
-        Herkus::HerkusBus& herkus_bus_;
-        bool is_initialized_;
+namespace Arina4SoftwareModel::Common::ALU {
+    struct AluReplyMessage {
+        std::string operation_code;
+        uint32_t result;
+        uint32_t operation_sequence_number;
+        bool carry_flag;
+        bool zero_flag;
+        std::string status;  // "success" or "error"
     };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+}  // namespace Arina4SoftwareModel::Common::ALU

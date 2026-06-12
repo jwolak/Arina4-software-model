@@ -36,7 +36,7 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : herkus_bus_(Herkus::HerkusBus::getInstance()) {
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : herkus_bus_(Herkus::HerkusBus::getInstance()), is_initialized_(false) {
         spdlog::info("ArithmeticAndLogicalUnit initialized and connected to HerkusBus");
     }
 
@@ -48,6 +48,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
             spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
         });
 
+        is_initialized_ = true;
         return true;
     }
 
