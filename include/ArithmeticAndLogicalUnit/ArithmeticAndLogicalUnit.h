@@ -43,6 +43,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
 
       private:
         Herkus::HerkusBus& herkus_bus_;
+        bool is_initialized_;
     };
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
