@@ -32,23 +32,15 @@
 
 #pragma once
 
-#include "ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.h"
+#include <cstdint>
+#include <string>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+#include "Common/ALU/AluResponseMessage.h"
 
-    class ArithmeticAndLogicalUnit {
+namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
+    class IALUExecutor {
       public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      protected:
-        ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-
-      private:
-        bool is_initialized_;
-        Herkus::HerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
+        virtual ~IALUExecutor() = default;
+        virtual Common::ALU::AluResponse Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) = 0;
     };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

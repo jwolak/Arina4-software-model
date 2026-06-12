@@ -30,25 +30,15 @@
  *
  */
 
-#pragma once
+#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 
-#include "ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.h"
+#include "Common/ALU/AluResponseMessage.h"
+#include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
+    Common::ALU::AluResponse ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
+        spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
 
-    class ArithmeticAndLogicalUnit {
-      public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      protected:
-        ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-
-      private:
-        bool is_initialized_;
-        Herkus::HerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
-    };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+        return Common::ALU::AluResponse{};
+    }
+}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
