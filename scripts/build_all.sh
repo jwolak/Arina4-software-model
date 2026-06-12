@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #===============================================================================
-#                    BorASM - Universal Build Script (Debug & Release)
+#                    Arina4SoftwareModel - Universal Build Script (Debug & Release)
 #===============================================================================
-# This script builds the BorASM project in Debug and/or Release mode
+# This script builds the Arina4SoftwareModel project in Debug and/or Release mode
 # Creates separate binary directories for each build type
 # Author: Auto-generated
 # Version: 1.0
@@ -170,7 +170,7 @@ build_project() {
             ;;
     esac
     
-    print_info "Building BorASM in $build_type mode..."
+    print_info "Building Arina4SoftwareModel in $build_type mode..."
     
     cd "$build_dir"
     
@@ -185,18 +185,18 @@ build_project() {
         
         # Copy binary to binaries directory
         # Binary is now built in the build directory itself
-        if [ -f "$build_dir/BorASM.x64" ]; then
-            cp "$build_dir/BorASM.x64" "$bin_dir/BorASM.x64"
-            print_success "Binary copied to: $bin_dir/BorASM.x64"
+        if [ -f "$build_dir/Arina4SoftwareModel.x64" ]; then
+            cp "$build_dir/Arina4SoftwareModel.x64" "$bin_dir/Arina4SoftwareModel.x64"
+            print_success "Binary copied to: $bin_dir/Arina4SoftwareModel.x64"
             
             # Create version info file
             create_version_info "$build_type" "$bin_dir"
         else
-            print_warning "Binary not found at: $build_dir/BorASM.x64"
+            print_warning "Binary not found at: $build_dir/Arina4SoftwareModel.x64"
             # Try alternative locations
-            if [ -f "$PROJECT_ROOT/BorASM.x64" ]; then
-                cp "$PROJECT_ROOT/BorASM.x64" "$bin_dir/BorASM.x64"
-                print_success "Binary found and copied from: $PROJECT_ROOT/BorASM.x64"
+            if [ -f "$PROJECT_ROOT/Arina4SoftwareModel.x64" ]; then
+                cp "$PROJECT_ROOT/Arina4SoftwareModel.x64" "$bin_dir/Arina4SoftwareModel.x64"
+                print_success "Binary found and copied from: $PROJECT_ROOT/Arina4SoftwareModel.x64"
                 create_version_info "$build_type" "$bin_dir"
             else
                 print_error "Binary not found in any expected location"
@@ -217,7 +217,7 @@ create_version_info() {
     local info_file="$bin_dir/build_info.txt"
     
     cat > "$info_file" << EOF
-BorASM Build Information
+# Arina4SoftwareModel Build Information
 =======================
 Build Type: $build_type
 Build Date: $(date)
@@ -228,7 +228,7 @@ Git Branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Unknown")
 Git Commit: $(git rev-parse --short HEAD 2>/dev/null || echo "Unknown")
 Built by: $(whoami)
 
-Binary Location: $bin_dir/BorASM.x64
+Binary Location: $bin_dir/Arina4SoftwareModel.x64
 EOF
     
     print_info "Build info saved to: $info_file"
@@ -242,24 +242,24 @@ show_build_summary() {
     print_section "BUILD SUMMARY"
     
     if [ "$debug_built" = true ]; then
-        echo -e "${GREEN}✓${NC} Debug build:   ${YELLOW}$DEBUG_BIN_DIR/BorASM.x64${NC}"
-        if [ -f "$DEBUG_BIN_DIR/BorASM.x64" ]; then
-            local debug_size=$(du -h "$DEBUG_BIN_DIR/BorASM.x64" | cut -f1)
+        echo -e "${GREEN}✓${NC} Debug build:   ${YELLOW}$DEBUG_BIN_DIR/Arina4SoftwareModel.x64${NC}"
+        if [ -f "$DEBUG_BIN_DIR/Arina4SoftwareModel.x64" ]; then
+            local debug_size=$(du -h "$DEBUG_BIN_DIR/Arina4SoftwareModel.x64" | cut -f1)
             echo -e "  Size: $debug_size"
         fi
     fi
     
     if [ "$release_built" = true ]; then
-        echo -e "${GREEN}✓${NC} Release build: ${YELLOW}$RELEASE_BIN_DIR/BorASM.x64${NC}"
-        if [ -f "$RELEASE_BIN_DIR/BorASM.x64" ]; then
-            local release_size=$(du -h "$RELEASE_BIN_DIR/BorASM.x64" | cut -f1)
+        echo -e "${GREEN}✓${NC} Release build: ${YELLOW}$RELEASE_BIN_DIR/Arina4SoftwareModel.x64${NC}"
+        if [ -f "$RELEASE_BIN_DIR/Arina4SoftwareModel.x64" ]; then
+            local release_size=$(du -h "$RELEASE_BIN_DIR/Arina4SoftwareModel.x64" | cut -f1)
             echo -e "  Size: $release_size"
         fi
     fi
     
     echo ""
-    echo -e "To run Debug:   ${CYAN}$DEBUG_BIN_DIR/BorASM.x64${NC}"
-    echo -e "To run Release: ${CYAN}$RELEASE_BIN_DIR/BorASM.x64${NC}"
+        echo -e "To run Debug:   ${CYAN}$DEBUG_BIN_DIR/Arina4SoftwareModel.x64${NC}"
+    echo -e "To run Release: ${CYAN}$RELEASE_BIN_DIR/Arina4SoftwareModel.x64${NC}"
 }
 
 # Function to show build info
@@ -342,7 +342,7 @@ build_and_run_tests() {
         exit 1
     fi
     # Try to run tests using ctest or test binary
-    local test_bin="$DEBUG_BUILD_DIR/tests/bin/BorASM-Tests.x64"
+    local test_bin="$DEBUG_BUILD_DIR/tests/bin/Arina4SoftwareModel-Tests.x64"
     if [ -f "$test_bin" ]; then
         if [ -n "$suite_name" ] && [ -n "$test_name" ]; then
             print_info "Running test suite: $suite_name, test: $test_name"
@@ -428,7 +428,7 @@ main() {
         set -x
     fi
     
-    print_section "BorASM Universal Build Script"
+    print_section "Arina4SoftwareModel Universal Build Script"
     
     # Check prerequisites
     if ! command_exists cmake; then

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #===============================================================================
-#                           BorASM Code Formatter Script
+#                           Arina4SoftwareModel Code Formatter Script
 #===============================================================================
 # Script to format C++ code according to project style guide
 # Uses clang-format with Google C++ Style Guide (customized)
@@ -183,7 +183,7 @@ format_files() {
 
 # Function to show project formatting status
 show_status() {
-    print_section "BorASM Project Formatting Status"
+    print_section "Arina4SoftwareModel Project Formatting Status"
     
     # Check if .clang-format exists
     if [ -f "$PROJECT_ROOT/.clang-format" ]; then
@@ -237,7 +237,7 @@ show_status() {
 show_usage() {
     echo "Usage: $0 [OPTIONS] [FILES/DIRECTORIES]"
     echo ""
-    echo "BorASM Code Formatter - Formats C++ code according to project style guide"
+    echo "Arina4SoftwareModel Code Formatter - Formats C++ code according to project style guide"
     echo ""
     echo "Options:"
     echo "  -a, --all           Format all source files in the project"
@@ -335,7 +335,7 @@ main() {
         esac
     done
     
-    print_section "BorASM Code Formatter"
+    print_section "Arina4SoftwareModel Code Formatter"
     
     # Check prerequisites
     check_clang_format

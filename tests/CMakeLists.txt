@@ -143,7 +143,7 @@ if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/bin/${TEST_PROJECT_NAME}
         DEPENDS ${TEST_PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
-        COMMENT "${Blue}Running BorASM tests...${ColourReset}"
+        COMMENT "${Blue}Running Arina4SoftwareModel tests...${ColourReset}"
         VERBATIM
     )
     
@@ -155,7 +155,7 @@ if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
                 --gtest_print_time=1
         DEPENDS ${TEST_PROJECT_NAME}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
-        COMMENT "${Blue}Running BorASM tests with verbose output...${ColourReset}"
+        COMMENT "${Blue}Running Arina4SoftwareModel tests with verbose output...${ColourReset}"
         VERBATIM
     )
     
@@ -207,7 +207,7 @@ endif()
 #                            Final Status
 #-------------------------------------------------------------------------------
 message(STATUS "${Magenta}===============================================================================${ColourReset}")
-message(STATUS "${Magenta}                          BorASM Tests Configuration${ColourReset}")
+message(STATUS "${Magenta}                          Arina4SoftwareModel Tests Configuration${ColourReset}")
 message(STATUS "${Magenta}===============================================================================${ColourReset}")
 
 if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
