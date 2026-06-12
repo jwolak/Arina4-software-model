@@ -119,6 +119,11 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/include
 )
 
+# nlohmann/json (third-party)
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/json/include
+)
+
 set(HERKUSBUS_LIB ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/x64/libHerkusBus.so)
 message(STATUS "Linking to HerkusBus: " ${HERKUSBUS_LIB})
 
