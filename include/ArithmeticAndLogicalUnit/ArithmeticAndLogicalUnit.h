@@ -39,8 +39,11 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
 
     class ArithmeticAndLogicalUnit {
       public:
-        ArithmeticAndLogicalUnit();
+        explicit ArithmeticAndLogicalUnit();
         bool Initialize();
+
+      protected:
+        ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
 
       private:
         bool is_initialized_;

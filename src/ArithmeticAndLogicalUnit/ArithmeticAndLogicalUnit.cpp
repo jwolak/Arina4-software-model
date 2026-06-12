@@ -37,10 +37,10 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit()
-        : is_initialized_(false), herkus_bus_(Herkus::HerkusBus::getInstance()), alu_executor_(std::make_unique<ALUExecutor::ALUExecutor>()) {
-        spdlog::info("ArithmeticAndLogicalUnit initialized and connected to HerkusBus");
-    }
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : ArithmeticAndLogicalUnit(std::make_unique<ALUExecutor::ALUExecutor>()) {}
+
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor)
+        : is_initialized_(false), herkus_bus_(Herkus::HerkusBus::getInstance()), alu_executor_(std::move(alu_executor)) {}
 
     bool ArithmeticAndLogicalUnit::Initialize() {
         spdlog::info("ArithmeticAndLogicalUnit Initialize called");
@@ -50,7 +50,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
             spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
             // try {
             //     AluRequest req = payload.get<AluRequest>();
-            //     AluResponse resp = alu_engine_.Execute(req);
+            //     AluResponse resp = alu_executor_->Execute(req.operation_code, req.acc, req.operand_b);
             //     herkus_bus_.Publish(Common::HerkusBusTopics::kAluResponseTopic, nlohmann::json(resp));
             // } catch (const std::exception& e) {
             //     spdlog::error("Error processing ALU request: {}", e.what());
@@ -58,6 +58,9 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         });
 
         is_initialized_ = true;
+        spdlog::debug("is_initialized_ set to true");
+
+        spdlog::info("ArithmeticAndLogicalUnit initialized successfully");
         return true;
     }
 
