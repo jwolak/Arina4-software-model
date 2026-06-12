@@ -67,3 +67,9 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Project binaries
+binaries/
+
+# Generated version header
+include/version.h
