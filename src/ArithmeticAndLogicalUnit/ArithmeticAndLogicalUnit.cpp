@@ -31,3 +31,10 @@
  */
 
 #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
+
+#include "spdlog/spdlog.h"
+
+namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() {}
+
+}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

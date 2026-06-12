@@ -29,3 +29,16 @@
  * SUCH DAMAGE.
  *
  */
+
+#pragma once
+
+#include "HerkusBus.h"
+
+namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+
+    class ArithmeticAndLogicalUnit {
+      public:
+        ArithmeticAndLogicalUnit();
+    };
+
+}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
