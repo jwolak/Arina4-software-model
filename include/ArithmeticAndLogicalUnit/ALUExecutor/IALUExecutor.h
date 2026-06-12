@@ -35,10 +35,12 @@
 #include <cstdint>
 #include <string>
 
+#include "Common/ALU/AluResponseMessage.h"
+
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
     class IALUExecutor {
       public:
         virtual ~IALUExecutor() = default;
-        virtual uint32_t Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) = 0;
+        virtual Common::ALU::AluResponse Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) = 0;
     };
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
