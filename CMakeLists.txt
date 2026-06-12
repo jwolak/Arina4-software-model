@@ -114,6 +114,14 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/include
 )
 
+# Third-party HerkusBus
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/include
+)
+
+set(HERKUSBUS_LIB ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/x64/libHerkusBus.so)
+message(STATUS "Linking to HerkusBus: " ${HERKUSBUS_LIB})
+
 #-------------------------------------------------------------------------------
 #                                Project source directory
 #-------------------------------------------------------------------------------
@@ -152,7 +160,7 @@ message(STATUS "Binary name: " ${OUTPUT_BINARY_NAME})
 #-------------------------------------------------------------------------------
 #                                Project links
 #-------------------------------------------------------------------------------
-target_link_libraries(${OUTPUT_BINARY_NAME} PUBLIC ${LOGGER_LIBS_PATH})
+target_link_libraries(${OUTPUT_BINARY_NAME} PUBLIC ${LOGGER_LIBS_PATH} ${HERKUSBUS_LIB})
 
 #-------------------------------------------------------------------------------
 #                                Project tests
