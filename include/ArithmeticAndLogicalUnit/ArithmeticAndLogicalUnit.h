@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include "ALUExecutor/ALUExecutor.h"
 #include "HerkusBus.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
@@ -42,8 +43,9 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         bool Initialize();
 
       private:
-        Herkus::HerkusBus& herkus_bus_;
         bool is_initialized_;
+        Herkus::HerkusBus& herkus_bus_;
+        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
     };
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

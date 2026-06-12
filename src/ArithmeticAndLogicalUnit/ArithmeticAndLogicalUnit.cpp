@@ -32,11 +32,13 @@
 
 #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 
+#include "ALUExecutor/ALUExecutor.h"
 #include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : herkus_bus_(Herkus::HerkusBus::getInstance()), is_initialized_(false) {
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit()
+        : is_initialized_(false), herkus_bus_(Herkus::HerkusBus::getInstance()), alu_executor_(std::make_unique<ALUExecutor::ALUExecutor>()) {
         spdlog::info("ArithmeticAndLogicalUnit initialized and connected to HerkusBus");
     }
 
