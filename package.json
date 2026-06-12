@@ -1,0 +1,42 @@
+{
+    "name": "arina4-software-model",
+    "description": "Arina-4 Software Model — reference software implementation of the Arina-4 CPU",
+    "version": "0.1.1",
+    "author": "Janusz Wolak",
+    "license": "BSD-3-Clause",
+    "homepage": "",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "keywords": [
+        "arina",
+        "cpu",
+        "simulator",
+        "c++"
+    ],
+    "engines": {
+        "cmake": ">=3.10",
+        "gcc": ">=9.0",
+        "clang": ">=10.0"
+    },
+    "build": {
+        "type": "cmake",
+        "standard": "c++20",
+        "optimization": {
+            "debug": "-O0 -g3",
+            "release": "-O2 -DNDEBUG"
+        }
+    },
+    "dependencies": {
+        "spdlog": "1.15.3",
+        "gtest": "1.13.0"
+    },
+    "scripts": {
+        "build": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)",
+        "build:debug": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -- -j$(nproc)",
+        "test": "ctest --test-dir build --output-on-failure",
+        "format": "clang-format -i $(git ls-files '*.cpp' '*.hpp' '*.h' '*.c') || true",
+        "clean": "cmake --build build --target clean || rm -rf build"
+    }
+}
