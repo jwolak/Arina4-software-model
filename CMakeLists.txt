@@ -81,6 +81,8 @@ if(PROJECT_TESTS)
     message(STATUS "Build test enabled")
 endif()
 
+# Ensure spdlog debug/release symlinks exist when configuring
+include(${CMAKE_SOURCE_DIR}/cmake/create_spdlog_symlinks.cmake OPTIONAL)
 # Define the destination for the binary object
 set (BUILD_DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
