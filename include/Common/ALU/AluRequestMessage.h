@@ -35,11 +35,29 @@
 #include <cstdint>
 #include <string>
 
+#include "AluCommonMessagesJsonKeys.h"
+#include "nlohmann/json.hpp"
+
 namespace Arina4SoftwareModel::Common::ALU {
+
     struct AluRequestMessage {
         std::string operation_code;
         uint32_t acc;
         uint32_t operand_b;
         uint32_t operation_sequence_number;
     };
+
+    inline void to_json(nlohmann::json& to_json_obj, const AluRequestMessage& alu_request_message) {
+        to_json_obj = nlohmann::json{{kOperationCodeJsonKey, alu_request_message.operation_code},
+                                     {kAccJsonKey, alu_request_message.acc},
+                                     {kOperandBJsonKey, alu_request_message.operand_b},
+                                     {kOperationSequenceNumberJsonKey, alu_request_message.operation_sequence_number}};
+    }
+    inline void from_json(const nlohmann::json& from_json_obj, AluRequestMessage& alu_request_message) {
+        from_json_obj.at(kOperationCodeJsonKey).get_to(alu_request_message.operation_code);
+        from_json_obj.at(kAccJsonKey).get_to(alu_request_message.acc);
+        from_json_obj.at(kOperandBJsonKey).get_to(alu_request_message.operand_b);
+        from_json_obj.at(kOperationSequenceNumberJsonKey).get_to(alu_request_message.operation_sequence_number);
+    }
+
 }  // namespace Arina4SoftwareModel::Common::ALU

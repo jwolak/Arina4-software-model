@@ -32,23 +32,13 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.h"
-
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-
-    class ArithmeticAndLogicalUnit {
-      public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      protected:
-        ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-
-      private:
-        bool is_initialized_;
-        Herkus::HerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
-    };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+namespace Arina4SoftwareModel::Common::ALU {
+    constexpr const char* kOperationCodeJsonKey = "operation_code";
+    constexpr const char* kResultJsonKey = "result";
+    constexpr const char* kOperationSequenceNumberJsonKey = "operation_sequence_number";
+    constexpr const char* kCarryFlagJsonKey = "carry_flag";
+    constexpr const char* kZeroFlagJsonKey = "zero_flag";
+    constexpr const char* kStatusJsonKey = "status";
+    constexpr const char* kAccJsonKey = "acc";
+    constexpr const char* kOperandBJsonKey = "operand_b";
+}
