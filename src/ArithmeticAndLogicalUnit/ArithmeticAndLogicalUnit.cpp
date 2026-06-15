@@ -33,6 +33,8 @@
 #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 
 #include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
+#include "Common/ALU/AluReplyMessage.h"
+#include "Common/ALU/AluRequestMessage.h"
 #include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 
@@ -48,13 +50,27 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
-            // try {
-            //     AluRequest req = payload.get<AluRequest>();
-            //     AluResponse resp = alu_executor_->Execute(req.operation_code, req.acc, req.operand_b);
-            //     herkus_bus_.Publish(Common::HerkusBusTopics::kAluResponseTopic, nlohmann::json(resp));
-            // } catch (const std::exception& e) {
-            //     spdlog::error("Error processing ALU request: {}", e.what());
-            // }
+            try {
+                Common::ALU::AluRequestMessage alu_request_message;
+                try {
+                    spdlog::debug("Attempting to parse ALU request message from JSON");
+                    alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
+                } catch (const nlohmann::json::exception& ex) {
+                    spdlog::error("ALU JSON parse error: {}", ex.what());
+                    return;
+                }
+
+                spdlog::debug("Parsed ALU request message: operation_code={}, acc={}, operand_b={}, operation_sequence_number={}",
+                              alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b,
+                              alu_request_message.operation_sequence_number);
+                Common::ALU::AluReplyMessage resp =
+                    alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
+
+                spdlog::debug("ALU execution completed. Publishing response to topic {}: {}", Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp).dump());
+                herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp));
+            } catch (const std::exception& ex) {
+                spdlog::error("Error processing ALU request: {}", ex.what());
+            }
         });
 
         is_initialized_ = true;

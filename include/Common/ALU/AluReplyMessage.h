@@ -35,7 +35,11 @@
 #include <cstdint>
 #include <string>
 
+#include "AluCommonMessagesJsonKeys.h"
+#include "nlohmann/json.hpp"
+
 namespace Arina4SoftwareModel::Common::ALU {
+
     struct AluReplyMessage {
         std::string operation_code;
         uint32_t result;
@@ -44,4 +48,22 @@ namespace Arina4SoftwareModel::Common::ALU {
         bool zero_flag;
         std::string status;  // "success" or "error"
     };
+
+    inline void to_json(nlohmann::json& to_json_obj, const AluReplyMessage& alu_reply_message) {
+        to_json_obj = nlohmann::json{{kOperationCodeJsonKey, alu_reply_message.operation_code},
+                                     {kResultJsonKey, alu_reply_message.result},
+                                     {kOperationSequenceNumberJsonKey, alu_reply_message.operation_sequence_number},
+                                     {kCarryFlagJsonKey, alu_reply_message.carry_flag},
+                                     {kZeroFlagJsonKey, alu_reply_message.zero_flag},
+                                     {kStatusJsonKey, alu_reply_message.status}};
+    }
+
+    inline void from_json(const nlohmann::json& from_json_obj, AluReplyMessage& alu_reply_message) {
+        from_json_obj.at(kOperationCodeJsonKey).get_to(alu_reply_message.operation_code);
+        from_json_obj.at(kResultJsonKey).get_to(alu_reply_message.result);
+        from_json_obj.at(kOperationSequenceNumberJsonKey).get_to(alu_reply_message.operation_sequence_number);
+        from_json_obj.at(kCarryFlagJsonKey).get_to(alu_reply_message.carry_flag);
+        from_json_obj.at(kZeroFlagJsonKey).get_to(alu_reply_message.zero_flag);
+        from_json_obj.at(kStatusJsonKey).get_to(alu_reply_message.status);
+    }
 }  // namespace Arina4SoftwareModel::Common::ALU
