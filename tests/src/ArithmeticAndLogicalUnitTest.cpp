@@ -88,7 +88,7 @@ namespace arithmetic_and_logical_unit_test {
 
     TEST_F(ArithmeticAndLogicalUnitTest, Initialize_Should_Publish_ALU_Response_On_HerkusBus_When_ALU_Request_Received) {
         Common::ALU::AluRequestMessage alu_request_message{"ADD", 5, 3, 1};
-        Common::ALU::AluReplyMessage alu_reply_message{"ADD", 1};
+        Common::ALU::AluReplyMessage alu_reply_message{"ADD", 1, 1, false, false, "success"};
 
         EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _))
             .WillOnce(Invoke([&](const std::string& topic, Herkus::subscriber_callback sub_callback) {
