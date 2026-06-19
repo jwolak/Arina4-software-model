@@ -116,7 +116,7 @@ include_directories(
 
 # Third-party HerkusBus
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/HerkusBus/api
 )
 
 # nlohmann/json (third-party)
