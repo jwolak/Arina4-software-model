@@ -38,10 +38,10 @@
 
 namespace mocks {
 
-    class MockHerkusBus : public IHerkusBus {
+    class MockHerkusBus : public Herkus::IHerkusBus {
       public:
-        MOCK_METHOD(void, Publish, (const std::string& topic, const json& message_payload), (override));
-        MOCK_METHOD(void, Subscribe, (const std::string& topic, subscriber_callback sub_callback), (override));
+        MOCK_METHOD(void, Publish, (const std::string& topic, const Herkus::json& message_payload), (override));
+        MOCK_METHOD(void, Subscribe, (const std::string& topic, Herkus::subscriber_callback sub_callback), (override));
     };
 
 }  // namespace mocks

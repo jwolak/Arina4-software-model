@@ -34,13 +34,13 @@
 
 #include <gmock/gmock.h>
 
-#include "ArithmeticAndLogicalUnit/IALUExecutor/IALUExecutor.h"
+#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
 
 namespace mocks {
 
     class ALUExecutorMock : public Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor::IALUExecutor {
       public:
-        MOCK_METHOD(Arina4SoftwareModel::Common::ALU::AluReplyMessage, Execute,
-                    (const Arina4SoftwareModel::Common::ALU::AluRequestMessage& alu_request_message), (override));
+        MOCK_METHOD(Arina4SoftwareModel::Common::ALU::AluReplyMessage, Execute, (const std::string& operation_code, uint32_t acc, uint32_t operand_b),
+                    (override));
     };
 }  // namespace mocks
