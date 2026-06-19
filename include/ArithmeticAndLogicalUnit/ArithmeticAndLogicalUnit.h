@@ -44,6 +44,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
 
       protected:
         ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
+        bool GetIsInitialized() const;
 
       private:
         bool is_initialized_;

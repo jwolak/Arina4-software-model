@@ -1,7 +1,7 @@
 {
     "name": "arina4-software-model",
     "description": "Arina-4 Software Model — reference software implementation of the Arina-4 CPU",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "Janusz Wolak",
     "license": "BSD-3-Clause",
     "homepage": "",

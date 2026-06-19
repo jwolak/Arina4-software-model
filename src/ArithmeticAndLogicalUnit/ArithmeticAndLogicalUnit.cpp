@@ -81,4 +81,9 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         return true;
     }
 
+    bool ArithmeticAndLogicalUnit::GetIsInitialized() const {
+        spdlog::warn("GetIsInitialized called, returning {}", is_initialized_);
+        return is_initialized_;
+    }
+
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

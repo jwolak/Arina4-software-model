@@ -49,6 +49,7 @@ namespace arithmetic_and_logical_unit_test {
         ArithmeticAndLogicalUnitTestable(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor)
             : ArithmeticAndLogicalUnit(herkus_bus, std::move(alu_executor)) {}
 
+        using ArithmeticAndLogicalUnit::GetIsInitialized;
         using ArithmeticAndLogicalUnit::Initialize;
     };
 
@@ -64,4 +65,9 @@ namespace arithmetic_and_logical_unit_test {
         StrictMock<ALUExecutorMock>* alu_executor_mock;
         ArithmeticAndLogicalUnitTestable arithmetic_and_logical_unit;
     };
+
+    TEST_F(ArithmeticAndLogicalUnitTest, Not_Initialized_And_Inialiazed_Status_As_False_Returned) {
+        EXPECT_FALSE(arithmetic_and_logical_unit.GetIsInitialized());
+    }
+
 }  // namespace arithmetic_and_logical_unit_test
