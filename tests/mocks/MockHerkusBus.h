@@ -36,7 +36,7 @@
 
 #include "HerkusBus.hpp"
 
-namespace Herkus {
+namespace mocks {
 
     class MockHerkusBus : public IHerkusBus {
       public:
@@ -44,4 +44,4 @@ namespace Herkus {
         MOCK_METHOD(void, Subscribe, (const std::string& topic, subscriber_callback sub_callback), (override));
     };
 
-}  // namespace Herkus
+}  // namespace mocks

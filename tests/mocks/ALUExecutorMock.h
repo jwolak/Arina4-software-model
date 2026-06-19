@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyrights 2026, Janusz Wolak
+ * Copyright (c) 2025, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,38 +30,17 @@
  *
  */
 
-#include <gtest/gtest.h>
+#pragma once
 
-#include "ALUExecutorMock.h"
-#include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
-#include "MockHerkusBus.h"
+#include <gmock/gmock.h>
 
-namespace arithmetic_and_logical_unit_test {
+#include "ArithmeticAndLogicalUnit/IALUExecutor/IALUExecutor.h"
 
-    using namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit;
-    using namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor;
-    using namespace Herkus;
-    using namespace testing;
-    using namespace mocks;
+namespace mocks {
 
-    class ArithmeticAndLogicalUnitTestable : public ArithmeticAndLogicalUnit {
+    class ALUExecutorMock : public Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor::IALUExecutor {
       public:
-        ArithmeticAndLogicalUnitTestable(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor)
-            : ArithmeticAndLogicalUnit(herkus_bus, std::move(alu_executor)) {}
-
-        using ArithmeticAndLogicalUnit::Initialize;
+        MOCK_METHOD(Arina4SoftwareModel::Common::ALU::AluReplyMessage, Execute,
+                    (const Arina4SoftwareModel::Common::ALU::AluRequestMessage& alu_request_message), (override));
     };
-
-    class ArithmeticAndLogicalUnitTest : public ::testing::Test {
-      public:
-        ArithmeticAndLogicalUnitTest()
-            : herkus_bus_mock(new StrictMock<MockHerkusBus>()),
-              alu_executor_mock(new StrictMock<ALUExecutorMock>()),
-              arithmetic_and_logical_unit{*herkus_bus_mock, std::unique_ptr<ALUExecutor::IALUExecutor>(alu_executor_mock)} {}
-        ~ArithmeticAndLogicalUnitTest() { delete herkus_bus_mock; }
-
-        StrictMock<MockHerkusBus>* herkus_bus_mock;
-        StrictMock<ALUExecutorMock>* alu_executor_mock;
-        ArithmeticAndLogicalUnitTestable arithmetic_and_logical_unit;
-    };
-}  // namespace arithmetic_and_logical_unit_test
+}  // namespace mocks
