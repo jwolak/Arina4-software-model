@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyrights 2026, Janusz Wolak
+ * Copyright (c) 2025, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,24 +32,15 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.hpp"
+#include <gmock/gmock.h>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
 
-    class ArithmeticAndLogicalUnit {
+namespace mocks {
+
+    class ALUExecutorMock : public Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor::IALUExecutor {
       public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      protected:
-        ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-        bool GetIsInitialized() const;
-
-      private:
-        bool is_initialized_;
-        Herkus::IHerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
+        MOCK_METHOD(Arina4SoftwareModel::Common::ALU::AluReplyMessage, Execute, (const std::string& operation_code, uint32_t acc, uint32_t operand_b),
+                    (override));
     };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+}  // namespace mocks

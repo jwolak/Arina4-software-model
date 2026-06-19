@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyrights 2026, Janusz Wolak
+ * Copyright (c) 2025, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,24 +32,7 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.hpp"
-
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-
-    class ArithmeticAndLogicalUnit {
-      public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
-
-      protected:
-        ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-        bool GetIsInitialized() const;
-
-      private:
-        bool is_initialized_;
-        Herkus::IHerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
-    };
-
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+/* Public umbrella header for application code. */
+#include "../include/HerkusBus.h"
+#include "../include/HerkusBusImpl.h"
+#include "../include/IHerkusBus.h"

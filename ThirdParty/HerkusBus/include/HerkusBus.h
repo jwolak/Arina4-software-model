@@ -1,10 +1,3 @@
-/*
- * HerkusBus.h
- *
- *  Created on: 2025
- *      Author: Janusz Wolak
- */
-
 /*-
  * BSD 3-Clause License
  *
@@ -44,6 +37,7 @@
 #include <string>
 
 #include "HerkusBusImpl.h"
+#include "IHerkusBus.h"
 #include "nlohmann/json.hpp"
 
 namespace Herkus {
@@ -51,7 +45,7 @@ namespace Herkus {
 using json = nlohmann::json;
 using subscriber_callback = std::function<void(const std::string& topic, const json& msg)>;
 
-class HerkusBus {
+class HerkusBus : public IHerkusBus {
  public:
   static HerkusBus& getInstance();
   HerkusBus(const HerkusBus&) = delete;
@@ -68,6 +62,8 @@ class HerkusBus {
 
  private:
   HerkusBus();
+
+ private:
   std::unique_ptr<HerkusBusImpl> herkus_bus_impl_;
 };
 

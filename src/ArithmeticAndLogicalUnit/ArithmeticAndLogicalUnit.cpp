@@ -39,10 +39,11 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit() : ArithmeticAndLogicalUnit(std::make_unique<ALUExecutor::ALUExecutor>()) {}
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit()
+        : ArithmeticAndLogicalUnit(Herkus::HerkusBus::getInstance(), std::make_unique<ALUExecutor::ALUExecutor>()) {}
 
-    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit(std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor)
-        : is_initialized_(false), herkus_bus_(Herkus::HerkusBus::getInstance()), alu_executor_(std::move(alu_executor)) {}
+    ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor)
+        : is_initialized_(false), herkus_bus_(herkus_bus), alu_executor_(std::move(alu_executor)) {}
 
     bool ArithmeticAndLogicalUnit::Initialize() {
         spdlog::info("ArithmeticAndLogicalUnit Initialize called");
@@ -78,6 +79,11 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
 
         spdlog::info("ArithmeticAndLogicalUnit initialized successfully");
         return true;
+    }
+
+    bool ArithmeticAndLogicalUnit::GetIsInitialized() const {
+        spdlog::warn("GetIsInitialized called, returning {}", is_initialized_);
+        return is_initialized_;
     }
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

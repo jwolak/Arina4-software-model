@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyrights 2026, Janusz Wolak
+ * Copyright (c) 2025, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,27 +29,23 @@
  * SUCH DAMAGE.
  *
  */
-
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
-#include "HerkusBus.hpp"
+#include <functional>
+#include <string>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
+#include "nlohmann/json.hpp"
 
-    class ArithmeticAndLogicalUnit {
-      public:
-        explicit ArithmeticAndLogicalUnit();
-        bool Initialize();
+namespace Herkus {
+using json = nlohmann::json;
+using subscriber_callback = std::function<void(const std::string& topic, const json& msg)>;
 
-      protected:
-        ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
-        bool GetIsInitialized() const;
+class IHerkusBus {
+ public:
+  virtual ~IHerkusBus() = default;
 
-      private:
-        bool is_initialized_;
-        Herkus::IHerkusBus& herkus_bus_;
-        std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
-    };
+  virtual void Publish(const std::string& topic, const json& message_payload) = 0;
+  virtual void Subscribe(const std::string& topic, subscriber_callback sub_callback) = 0;
+};
 
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
+}  // namespace Herkus

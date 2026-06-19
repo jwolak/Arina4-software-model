@@ -44,7 +44,8 @@ file(GLOB_RECURSE TEST_SOURCES
 )
 
 # Main project sources (excluding main.cpp to avoid multiple main functions)
-file(GLOB MAIN_PROJECT_SOURCES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+# Use recursive glob to collect sources in subdirectories (e.g., ArithmeticAndLogicalUnit)
+file(GLOB_RECURSE MAIN_PROJECT_SOURCES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 list(FILTER MAIN_PROJECT_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
 
 message(STATUS "Test sources found: ${TEST_SOURCES}")
@@ -101,6 +102,7 @@ if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
         gmock
         Threads::Threads
         ${TEST_LOGGER_LIBS_PATH}
+        ${CMAKE_SOURCE_DIR}/ThirdParty/HerkusBus/x64/libHerkusBus.so
         rt
     )
     
