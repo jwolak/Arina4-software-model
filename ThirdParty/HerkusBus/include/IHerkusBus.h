@@ -29,42 +29,23 @@
  * SUCH DAMAGE.
  *
  */
-
 #pragma once
 
 #include <functional>
-#include <memory>
 #include <string>
 
-#include "HerkusBusImpl.h"
-#include "IHerkusBus.h"
 #include "nlohmann/json.hpp"
 
 namespace Herkus {
-
 using json = nlohmann::json;
 using subscriber_callback = std::function<void(const std::string& topic, const json& msg)>;
 
-class HerkusBus : public IHerkusBus {
+class IHerkusBus {
  public:
-  static HerkusBus& getInstance();
-  HerkusBus(const HerkusBus&) = delete;
-  HerkusBus(HerkusBus&&) = delete;
-  HerkusBus& operator=(const HerkusBus&) = delete;
-  HerkusBus& operator=(HerkusBus&&) = delete;
+  virtual ~IHerkusBus() = default;
 
-  void Publish(const std::string& topic, const json& message_payload);
-  void Subscribe(const std::string& topic, subscriber_callback sub_callback);
-
- protected:
-  // for testing purposes only
-  explicit HerkusBus(std::unique_ptr<HerkusBusImpl> herkus_bus_impl);
-
- private:
-  HerkusBus();
-
- private:
-  std::unique_ptr<HerkusBusImpl> herkus_bus_impl_;
+  virtual void Publish(const std::string& topic, const json& message_payload) = 0;
+  virtual void Subscribe(const std::string& topic, subscriber_callback sub_callback) = 0;
 };
 
 }  // namespace Herkus
