@@ -1,0 +1,6 @@
+build-essential
+cmake
+libgtest-dev
+libgmock-dev
+pkg-config
+libboost-all-dev
