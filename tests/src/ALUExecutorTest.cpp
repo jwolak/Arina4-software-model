@@ -36,7 +36,7 @@
 
 namespace alu_executor_test {
     using namespace testing;
-    using namespace namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor;
+    using namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor;
 
     class ALUExecutorTest : public Test {
       public:
