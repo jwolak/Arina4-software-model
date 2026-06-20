@@ -46,43 +46,44 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         : is_initialized_(false), herkus_bus_(herkus_bus), alu_executor_(std::move(alu_executor)) {}
 
     bool ArithmeticAndLogicalUnit::Initialize() {
-        spdlog::info("ArithmeticAndLogicalUnit Initialize called");
+        spdlog::info("[ArithmeticAndLogicalUnit] Initialize() called...");
 
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
-            spdlog::info("Received message on topic {}: {}", topic, message_payload.dump());
+            spdlog::debug("[ArithmeticAndLogicalUnit] Received message on topic {}: {}", topic, message_payload.dump());
             try {
                 Common::ALU::AluRequestMessage alu_request_message;
                 try {
-                    spdlog::debug("Attempting to parse ALU request message from JSON");
+                    spdlog::debug("[ArithmeticAndLogicalUnit] Attempting to parse ALU request message from JSON");
                     alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
                 } catch (const nlohmann::json::exception& ex) {
-                    spdlog::error("ALU JSON parse error: {}", ex.what());
+                    spdlog::error("[ArithmeticAndLogicalUnit] ALU JSON parse error: {}", ex.what());
                     return;
                 }
 
-                spdlog::debug("Parsed ALU request message: operation_code={}, acc={}, operand_b={}, operation_sequence_number={}",
+                spdlog::debug("[ArithmeticAndLogicalUnit] Parsed ALU request message: operation_code={}, acc={}, operand_b={}, operation_sequence_number={}",
                               alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b,
                               alu_request_message.operation_sequence_number);
                 Common::ALU::AluReplyMessage resp =
                     alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
 
-                spdlog::debug("ALU execution completed. Publishing response to topic {}: {}", Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp).dump());
+                spdlog::debug("[ArithmeticAndLogicalUnit] ALU execution completed. Publishing response to topic {}: {}", Common::HerkusBusTopics::kAluTopic,
+                              nlohmann::json(resp).dump());
                 herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp));
             } catch (const std::exception& ex) {
-                spdlog::error("Error processing ALU request: {}", ex.what());
+                spdlog::error("[ArithmeticAndLogicalUnit] Error processing ALU request: {}", ex.what());
             }
         });
 
         is_initialized_ = true;
-        spdlog::debug("is_initialized_ set to true");
+        spdlog::debug("[ArithmeticAndLogicalUnit] is_initialized_ set to true");
 
-        spdlog::info("ArithmeticAndLogicalUnit initialized successfully");
+        spdlog::info("[ArithmeticAndLogicalUnit] sArithmeticAndLogicalUnit initialized successfully");
         return true;
     }
 
     bool ArithmeticAndLogicalUnit::GetIsInitialized() const {
-        spdlog::warn("GetIsInitialized called, returning {}", is_initialized_);
+        spdlog::warn("[ArithmeticAndLogicalUnit] GetIsInitialized called, returning {}", is_initialized_);
         return is_initialized_;
     }
 
