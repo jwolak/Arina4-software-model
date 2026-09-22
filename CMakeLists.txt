@@ -89,12 +89,12 @@ set (BUILD_DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Define the location/search path for the libraries
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Build type is: " ${CMAKE_BUILD_TYPE})
-    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Release/libspdlogd.so.1.15)
+    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Debug/libEquinoxLoggerd.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Release/libspdlog.so.1.15)
+    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Release/libEquinoxLogger.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
 endif()
 
