@@ -89,12 +89,12 @@ set (BUILD_DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Define the location/search path for the libraries
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Build type is: " ${CMAKE_BUILD_TYPE})
-    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Debug/libEquinoxLoggerd.a)
+    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/Equinox/x64/Debug/libEquinoxLoggerd.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Release/libEquinoxLogger.a)
+    set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/Equinox/x64/Release/libEquinoxLogger.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
 endif()
 
@@ -111,7 +111,7 @@ include_directories(
 #                                Project third-party include
 #-------------------------------------------------------------------------------
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/Equinox/include
 )
 
 # Third-party HerkusBus
