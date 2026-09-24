@@ -88,7 +88,13 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
 
             case OperationCodes::OperationCodesType::JMP:
                 spdlog::debug("JMP operation executed");
-
+                alu_reply_message.carry_flag = false;
+                alu_reply_message.program_counter_changed = true;
+                alu_reply_message.program_counter = operand_b;
+                alu_reply_message.operation_code = operation_code;
+                alu_reply_message.result = acc;
+                alu_reply_message.status = "OK";
+                alu_reply_message.zero_flag = (acc == 0);
                 break;
 
             case OperationCodes::OperationCodesType::JZ:
