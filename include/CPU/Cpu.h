@@ -30,15 +30,27 @@
  *
  */
 
- #pragma once
+#pragma once
 
- #include "HerkusBus.hpp"
+#include "HerkusBus.hpp"
 
- namespace CPU {
+namespace CPU {
     class Cpu {
-    public:
+      public:
         Cpu();
+        ~Cpu();
+        bool StartExecution();
+        void StopExecution();
 
-        //Herkus::IHerkusBus& herkus_bus_;
+      protected:
+        void ExecuteInstructionLoop();
+
+      private:
+        std::thread execute_instruction_thread_;
+        std::mutex execute_instruction_mutex_;
+        std::condition_variable execute_instruction_condition_;
+        bool execute_instruction_stop_flag_;
+
+        // Herkus::IHerkusBus& herkus_bus_;
     };
- }
+}  // namespace CPU

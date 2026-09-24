@@ -30,23 +30,24 @@
  *
  */
 
- #pragma once
+#pragma once
 
- #include <memory>
+#include <memory>
 
- #include "CPU/Cpu.h"
- #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
+#include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
+#include "CPU/Cpu.h"
 
- namespace Arina4SoftwareModel::arina4 {
+namespace Arina4SoftwareModel::arina4 {
     class Arina4 {
-    public:
+      public:
         explicit Arina4();
+        explicit ~Arina4();
 
-    protected:
+      protected:
         Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu);
 
-    private:
+      private:
         std::unique_ptr<CPU::Cpu> cpu_;
         std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu_;
     };
- } // namespace Arina4SoftwareModel::arina4
+}  // namespace Arina4SoftwareModel::arina4

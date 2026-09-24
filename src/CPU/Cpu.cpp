@@ -29,14 +29,25 @@
  * SUCH DAMAGE.
  *
  */
- 
- #include "CPU/Cpu.h"
- #include "spdlog/spdlog.h"
 
- namespace CPU
- {
-    Cpu::Cpu()
-    {
+#include "CPU/Cpu.h"
+
+#include "spdlog/spdlog.h"
+
+namespace CPU {
+    Cpu::Cpu() : execute_instruction_thread_{nullptr}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
+
+    Cpu::~Cpu() {
+        {
+            std::lock_guard lock(execute_instruction_mutex_);
+            execute_instruction_stop_flag_ = true;
+        }
+
+        execute_instruction_condition_.notify_all();
+
+        if (execute_instruction_thread_.joinable()) {
+            execute_instruction_thread_.join();
+        }
     }
- } // namespace CPU
- 
+
+}  // namespace CPU

@@ -73,3 +73,5 @@ binaries/
 
 # Generated version header
 include/version.h
+
+.vscode

@@ -30,17 +30,17 @@
  *
  */
 
- #include "Arina-4.h"
+#include "Arina-4.h"
 
- namespace Arina4SoftwareModel::arina4 {
+namespace Arina4SoftwareModel::arina4 {
 
-    Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>())
-    {
-    }
+    Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
 
     Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
-        : cpu_(std::move(cpu)), alu_(std::move(alu))
-    {
+        : cpu_(std::move(cpu)), alu_(std::move(alu)) {
+        cpu_->StartExecution();
     }
 
- } // namespace arina4
+    Arina4::~Arina4() { cpu_->StopExecution(); }
+
+}  // namespace Arina4SoftwareModel::arina4
