@@ -34,11 +34,19 @@
 
 #include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
 #include "Common/ALU/AluReplyMessage.h"
+#include "OperationCodes/OperationCodes.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
     class ALUExecutor : public IALUExecutor {
       public:
-        ALUExecutor() = default;
+        ALUExecutor();
         Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+
+        protected:
+          /* Tests purpose constructor */
+          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
+
+        private:
+        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
     };
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

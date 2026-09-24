@@ -40,6 +40,5 @@
         public:
             OperationCodes();
             OperationCodesType getOperationCode(std::string_view operation_code) const;
-
     };
  } // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes

@@ -33,13 +33,90 @@
 #include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 
 #include "Common/ALU/AluReplyMessage.h"
+#include "OperationCodes/OperationCodes.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
+
+    ALUExecutor::ALUExecutor() : ALUExecutor(std::make_unique<OperationCodes::OperationCodes>()) {}
+
+    /* Tests purpose constructor */
+    ALUExecutor::ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes) : operation_codes_(std::move(operation_codes)) {}
+
     Common::ALU::AluReplyMessage ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
         spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
 
-        
+        OperationCodes::OperationCodesType operation_code_type = operation_codes_->getOperationCode(operation_code);
+
+        switch (operation_code_type) {
+            case OperationCodes::OperationCodesType::NOP:
+                spdlog::debug("NOP operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::LDI:
+                spdlog::debug("LDI operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::ADD:
+                spdlog::debug("ADD operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::SUB:
+                spdlog::debug("SUB operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::MOV_FROM_REG_TO_ACC:
+                spdlog::debug("MOV_FROM_REG_TO_ACC operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::MOV_FROM_ACC_TO_REG:
+                spdlog::debug("MOV_FROM_ACC_TO_REG operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::JMP:
+                spdlog::debug("JMP operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::JZ:
+                spdlog::debug("JZ operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::JC:
+                spdlog::debug("JC operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::CALL:
+                spdlog::debug("CALL operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::RET:
+                spdlog::debug("RET operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::AND:
+                spdlog::debug("AND operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::OR:
+                spdlog::debug("OR operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::XOR:
+                spdlog::debug("XOR operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::INC:
+                spdlog::debug("INC operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::DEC:
+                spdlog::debug("DEC operation executed");
+                break;
+
+            default:
+                spdlog::warn("Unknown operation code type");
+                break;
+        }
 
         return Common::ALU::AluReplyMessage{};
     }

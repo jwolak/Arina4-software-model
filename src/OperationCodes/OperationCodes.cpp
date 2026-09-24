@@ -32,11 +32,90 @@
 
 #include "OperationCodes.h"
 #include "spdlog/spdlog.h"
+#include "OperationCodesType.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes {
-    OperationCodes::OperationCodes() {}
+    OperationCodes::OperationCodes() = default;
 
     OperationCodesType OperationCodes::getOperationCode(std::string_view operation_code) const {
         spdlog::trace("Getting operation code for: {}", operation_code);
+
+        if(operation_code == "NOP") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::NOP;
+        }
+
+        if(operation_code == "LDI") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::LDI;
+        }
+
+        if(operation_code == "ADD") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::ADD;
+        }
+
+        if(operation_code == "SUB") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::SUB;
+        }
+
+        if(operation_code == "MOV_FROM_REG_TO_ACC") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::MOV_FROM_REG_TO_ACC;
+        }
+
+        if(operation_code == "MOV_FROM_ACC_TO_REG") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::MOV_FROM_ACC_TO_REG;
+        }
+
+        if(operation_code == "JMP") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::JMP;
+        }
+
+        if(operation_code == "JZ") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::JZ;
+        }
+
+        if(operation_code == "CALL") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::CALL;
+        }
+
+        if(operation_code == "RET") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::RET;
+        }
+
+        if(operation_code == "AND") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::AND;
+        }
+
+        if(operation_code == "OR") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::OR;
+        }
+
+        if(operation_code == "XOR") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::XOR;
+        }
+
+        if(operation_code == "INC") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::INC;
+        }
+
+        if(operation_code == "DEC") {
+            spdlog::trace("Operation code is {}", operation_code);
+            return OperationCodesType::DEC;
+        }
+
+        spdlog::trace("Operation code is unknown, defaulting to NOP");
+        return OperationCodesType::NOP;
     }
 }
