@@ -48,9 +48,17 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
 
         OperationCodes::OperationCodesType operation_code_type = operation_codes_->getOperationCode(operation_code);
 
+        Common::ALU::AluReplyMessage alu_reply_message {};
+
         switch (operation_code_type) {
             case OperationCodes::OperationCodesType::NOP:
                 spdlog::debug("NOP operation executed");
+                alu_reply_message.carry_flag = false;
+                alu_reply_message.program_counter_changed = false;
+                alu_reply_message.operation_code = operation_code;
+                alu_reply_message.result = acc;
+                alu_reply_message.status = "OK";
+                alu_reply_message.zero_flag = (acc == 0);
                 break;
 
             case OperationCodes::OperationCodesType::LDI:
@@ -129,6 +137,6 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
                 break;
         }
 
-        return Common::ALU::AluReplyMessage{};
+        return alu_reply_message;
     }
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

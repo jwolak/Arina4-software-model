@@ -47,6 +47,8 @@ namespace Arina4SoftwareModel::Common::ALU {
         bool carry_flag;
         bool zero_flag;
         std::string status;  // "success" or "error"
+        uint32_t program_counter;
+        bool program_counter_changed;
     };
 
     inline void to_json(nlohmann::json& to_json_obj, const AluReplyMessage& alu_reply_message) {
@@ -55,7 +57,9 @@ namespace Arina4SoftwareModel::Common::ALU {
                                      {kOperationSequenceNumberJsonKey, alu_reply_message.operation_sequence_number},
                                      {kCarryFlagJsonKey, alu_reply_message.carry_flag},
                                      {kZeroFlagJsonKey, alu_reply_message.zero_flag},
-                                     {kStatusJsonKey, alu_reply_message.status}};
+                                     {kStatusJsonKey, alu_reply_message.status},
+                                     {kProgramCounterJsonKey, alu_reply_message.program_counter},
+                                     {kProgramCounterChangedJsonKey, alu_reply_message.program_counter_changed}};
     }
 
     inline void from_json(const nlohmann::json& from_json_obj, AluReplyMessage& alu_reply_message) {
@@ -65,5 +69,7 @@ namespace Arina4SoftwareModel::Common::ALU {
         from_json_obj.at(kCarryFlagJsonKey).get_to(alu_reply_message.carry_flag);
         from_json_obj.at(kZeroFlagJsonKey).get_to(alu_reply_message.zero_flag);
         from_json_obj.at(kStatusJsonKey).get_to(alu_reply_message.status);
+        from_json_obj.at(kProgramCounterJsonKey).get_to(alu_reply_message.program_counter);
+        from_json_obj.at(kProgramCounterChangedJsonKey).get_to(alu_reply_message.program_counter_changed);
     }
 }  // namespace Arina4SoftwareModel::Common::ALU
