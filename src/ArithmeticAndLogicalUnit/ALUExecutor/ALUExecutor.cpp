@@ -55,26 +55,32 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
 
             case OperationCodes::OperationCodesType::LDI:
                 spdlog::debug("LDI operation executed");
+                acc = operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::ADD:
                 spdlog::debug("ADD operation executed");
+                acc = acc + operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::SUB:
                 spdlog::debug("SUB operation executed");
+                acc = acc - operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::MOV_FROM_REG_TO_ACC:
                 spdlog::debug("MOV_FROM_REG_TO_ACC operation executed");
+                acc = operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::MOV_FROM_ACC_TO_REG:
                 spdlog::debug("MOV_FROM_ACC_TO_REG operation executed");
+                operand_b = acc;
                 break;
 
             case OperationCodes::OperationCodesType::JMP:
                 spdlog::debug("JMP operation executed");
+
                 break;
 
             case OperationCodes::OperationCodesType::JZ:
@@ -95,26 +101,31 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
 
             case OperationCodes::OperationCodesType::AND:
                 spdlog::debug("AND operation executed");
+                acc = acc & operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::OR:
                 spdlog::debug("OR operation executed");
+                acc = acc | operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::XOR:
                 spdlog::debug("XOR operation executed");
+                acc = acc ^ operand_b;
                 break;
 
             case OperationCodes::OperationCodesType::INC:
                 spdlog::debug("INC operation executed");
+                acc = acc + 1;
                 break;
 
             case OperationCodes::OperationCodesType::DEC:
                 spdlog::debug("DEC operation executed");
+                acc = acc - 1;
                 break;
 
             default:
-                spdlog::warn("Unknown operation code type");
+                spdlog::error("Unknown operation code type");
                 break;
         }
 
