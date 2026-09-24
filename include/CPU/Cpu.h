@@ -32,6 +32,11 @@
 
 #pragma once
 
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
+
 #include "HerkusBus.hpp"
 
 namespace CPU {
