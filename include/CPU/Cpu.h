@@ -32,21 +32,30 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluReplyMessage.h"
-#include "OperationCodes/OperationCodes.h"
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    class ALUExecutor : public IALUExecutor {
+#include "HerkusBus.hpp"
+
+namespace CPU {
+    class Cpu {
       public:
-        ALUExecutor();
-        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+        Cpu();
+        ~Cpu();
+        bool StartExecution();
+        void StopExecution();
 
-        protected:
-          /* Tests purpose constructor */
-          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
+      protected:
+        void ExecuteInstructionLoop();
 
-        private:
-        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
+      private:
+        std::thread execute_instruction_thread_;
+        std::mutex execute_instruction_mutex_;
+        std::condition_variable execute_instruction_condition_;
+        bool execute_instruction_stop_flag_;
+
+        // Herkus::IHerkusBus& herkus_bus_;
     };
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+}  // namespace CPU

@@ -30,23 +30,30 @@
  *
  */
 
-#pragma once
+#include "CPU/Cpu.h"
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluReplyMessage.h"
-#include "OperationCodes/OperationCodes.h"
+#include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    class ALUExecutor : public IALUExecutor {
-      public:
-        ALUExecutor();
-        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+namespace CPU {
+    Cpu::Cpu() : execute_instruction_thread_{}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
 
-        protected:
-          /* Tests purpose constructor */
-          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
+    Cpu::~Cpu() {
+        {
+            std::lock_guard lock(execute_instruction_mutex_);
+            execute_instruction_stop_flag_ = true;
+        }
 
-        private:
-        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
-    };
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+        execute_instruction_condition_.notify_all();
+
+        if (execute_instruction_thread_.joinable()) {
+            execute_instruction_thread_.join();
+        }
+    }
+
+    bool Cpu::StartExecution() {}
+
+    void Cpu::StopExecution() {}
+
+    void Cpu::ExecuteInstructionLoop() {}
+
+}  // namespace CPU

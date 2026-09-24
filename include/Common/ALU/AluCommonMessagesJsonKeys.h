@@ -41,4 +41,6 @@ namespace Arina4SoftwareModel::Common::ALU {
     constexpr const char* kStatusJsonKey = "status";
     constexpr const char* kAccJsonKey = "acc";
     constexpr const char* kOperandBJsonKey = "operand_b";
+    constexpr const char* kProgramCounterJsonKey = "program_counter";
+    constexpr const char* kProgramCounterChangedJsonKey = "program_counter_changed";
 }

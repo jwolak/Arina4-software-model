@@ -32,21 +32,25 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluReplyMessage.h"
-#include "OperationCodes/OperationCodes.h"
+#include <cstdint>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    class ALUExecutor : public IALUExecutor {
-      public:
-        ALUExecutor();
-        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
-
-        protected:
-          /* Tests purpose constructor */
-          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
-
-        private:
-        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
+ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes {
+    enum class OperationCodesType : uint32_t{
+        NOP,                    // No operation
+        LDI,                    // Load 4-bit immediate into accumulator
+        ADD,                    // Add operand to accumulator
+        SUB,                    // Subtract operand from accumulator
+        MOV_FROM_REG_TO_ACC,    // Move value from register to accumulator
+        MOV_FROM_ACC_TO_REG,    // Move value from accumulator to register
+        JMP,                    // Jump to address
+        JZ,                     // Jump if zero flag is set
+        JC,                     // Jump if carry flag is set
+        CALL,                   // Call subroutine
+        RET,                    // Return from subroutine
+        AND,                    // Logical AND with accumulator
+        OR,                     // Logical OR with accumulator
+        XOR,                    // Logical XOR with accumulator
+        INC,                    // Increment accumulator
+        DEC                     // Decrement accumulator
     };
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+ }

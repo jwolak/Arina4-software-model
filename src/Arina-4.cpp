@@ -30,23 +30,17 @@
  *
  */
 
-#pragma once
+#include "Arina-4.h"
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluReplyMessage.h"
-#include "OperationCodes/OperationCodes.h"
+namespace Arina4SoftwareModel::arina4 {
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    class ALUExecutor : public IALUExecutor {
-      public:
-        ALUExecutor();
-        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+    Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
 
-        protected:
-          /* Tests purpose constructor */
-          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
+    Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
+        : cpu_(std::move(cpu)), alu_(std::move(alu)) {
+        cpu_->StartExecution();
+    }
 
-        private:
-        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
-    };
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+    Arina4::~Arina4() { cpu_->StopExecution(); }
+
+}  // namespace Arina4SoftwareModel::arina4

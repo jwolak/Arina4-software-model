@@ -33,12 +33,116 @@
 #include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
 
 #include "Common/ALU/AluReplyMessage.h"
+#include "OperationCodes/OperationCodes.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
+
+    ALUExecutor::ALUExecutor() : ALUExecutor(std::make_unique<OperationCodes::OperationCodes>()) {}
+
+    /* Tests purpose constructor */
+    ALUExecutor::ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes) : operation_codes_(std::move(operation_codes)) {}
+
     Common::ALU::AluReplyMessage ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
         spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
 
-        return Common::ALU::AluReplyMessage{};
+        OperationCodes::OperationCodesType operation_code_type = operation_codes_->getOperationCode(operation_code);
+
+        Common::ALU::AluReplyMessage alu_reply_message {};
+
+        switch (operation_code_type) {
+            case OperationCodes::OperationCodesType::NOP:
+                spdlog::debug("NOP operation executed");
+                alu_reply_message.carry_flag = false;
+                alu_reply_message.program_counter_changed = false;
+                alu_reply_message.operation_code = operation_code;
+                alu_reply_message.result = acc;
+                alu_reply_message.status = "OK";
+                alu_reply_message.zero_flag = (acc == 0);
+                break;
+
+            case OperationCodes::OperationCodesType::LDI:
+                spdlog::debug("LDI operation executed");
+                acc = operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::ADD:
+                spdlog::debug("ADD operation executed");
+                acc = acc + operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::SUB:
+                spdlog::debug("SUB operation executed");
+                acc = acc - operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::MOV_FROM_REG_TO_ACC:
+                spdlog::debug("MOV_FROM_REG_TO_ACC operation executed");
+                acc = operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::MOV_FROM_ACC_TO_REG:
+                spdlog::debug("MOV_FROM_ACC_TO_REG operation executed");
+                operand_b = acc;
+                break;
+
+            case OperationCodes::OperationCodesType::JMP:
+                spdlog::debug("JMP operation executed");
+                alu_reply_message.carry_flag = false;
+                alu_reply_message.program_counter_changed = true;
+                alu_reply_message.program_counter = operand_b;
+                alu_reply_message.operation_code = operation_code;
+                alu_reply_message.result = acc;
+                alu_reply_message.status = "OK";
+                alu_reply_message.zero_flag = (acc == 0);
+                break;
+
+            case OperationCodes::OperationCodesType::JZ:
+                spdlog::debug("JZ operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::JC:
+                spdlog::debug("JC operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::CALL:
+                spdlog::debug("CALL operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::RET:
+                spdlog::debug("RET operation executed");
+                break;
+
+            case OperationCodes::OperationCodesType::AND:
+                spdlog::debug("AND operation executed");
+                acc = acc & operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::OR:
+                spdlog::debug("OR operation executed");
+                acc = acc | operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::XOR:
+                spdlog::debug("XOR operation executed");
+                acc = acc ^ operand_b;
+                break;
+
+            case OperationCodes::OperationCodesType::INC:
+                spdlog::debug("INC operation executed");
+                acc = acc + 1;
+                break;
+
+            case OperationCodes::OperationCodesType::DEC:
+                spdlog::debug("DEC operation executed");
+                acc = acc - 1;
+                break;
+
+            default:
+                spdlog::error("Unknown operation code type");
+                break;
+        }
+
+        return alu_reply_message;
     }
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor

@@ -32,21 +32,22 @@
 
 #pragma once
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/IALUExecutor.h"
-#include "Common/ALU/AluReplyMessage.h"
-#include "OperationCodes/OperationCodes.h"
+#include <memory>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    class ALUExecutor : public IALUExecutor {
+#include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
+#include "CPU/Cpu.h"
+
+namespace Arina4SoftwareModel::arina4 {
+    class Arina4 {
       public:
-        ALUExecutor();
-        Common::ALU::AluReplyMessage Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) override;
+        explicit Arina4();
+        ~Arina4();
 
-        protected:
-          /* Tests purpose constructor */
-          ALUExecutor(std::unique_ptr<OperationCodes::OperationCodes> operation_codes);
+      protected:
+        Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu);
 
-        private:
-        std::unique_ptr<OperationCodes::OperationCodes> operation_codes_;
+      private:
+        std::unique_ptr<CPU::Cpu> cpu_;
+        std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu_;
     };
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+}  // namespace Arina4SoftwareModel::arina4
