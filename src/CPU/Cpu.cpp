@@ -35,7 +35,7 @@
 #include "spdlog/spdlog.h"
 
 namespace CPU {
-    Cpu::Cpu() : execute_instruction_thread_{nullptr}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
+    Cpu::Cpu() : execute_instruction_thread_{}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
 
     Cpu::~Cpu() {
         {
@@ -49,5 +49,11 @@ namespace CPU {
             execute_instruction_thread_.join();
         }
     }
+
+    bool Cpu::StartExecution() {}
+
+    void Cpu::StopExecution() {}
+
+    void Cpu::ExecuteInstructionLoop() {}
 
 }  // namespace CPU
