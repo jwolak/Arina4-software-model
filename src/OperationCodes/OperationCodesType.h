@@ -30,17 +30,27 @@
  *
  */
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
+#pragma once
 
-#include "Common/ALU/AluReplyMessage.h"
-#include "spdlog/spdlog.h"
+#include <cstdint>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    Common::ALU::AluReplyMessage ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
-        spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
-
-        
-
-        return Common::ALU::AluReplyMessage{};
-    }
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes {
+    enum class OperationCodesType : uint32_t{
+        NOP,                    // No operation
+        LDI,                    // Load 4-bit immediate into accumulator
+        ADD,                    // Add operand to accumulator
+        SUB,                    // Subtract operand from accumulator
+        MOV_FROM_REG_TO_ACC,    // Move value from register to accumulator
+        MOV_FROM_ACC_TO_REG,    // Move value from accumulator to register
+        JMP,                    // Jump to address
+        JZ,                     // Jump if zero flag is set
+        JC,                     // Jump if carry flag is set
+        CALL,                   // Call subroutine
+        RET,                    // Return from subroutine
+        AND,                    // Logical AND with accumulator
+        OR,                     // Logical OR with accumulator
+        XOR,                    // Logical XOR with accumulator
+        INC,                    // Increment accumulator
+        DEC                     // Decrement accumulator
+    };
+ }

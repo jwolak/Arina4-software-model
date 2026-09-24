@@ -30,17 +30,16 @@
  *
  */
 
-#include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
+#pragma once
 
-#include "Common/ALU/AluReplyMessage.h"
-#include "spdlog/spdlog.h"
+#include "OperationCodesType.h"
+#include <string>
 
-namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor {
-    Common::ALU::AluReplyMessage ALUExecutor::Execute(const std::string& operation_code, uint32_t acc, uint32_t operand_b) {
-        spdlog::info("Executing ALU operation: {} with acc={} and operand_b={}", operation_code, acc, operand_b);
+ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes {
+    class OperationCodes {
+        public:
+            OperationCodes();
+            OperationCodesType getOperationCode(std::string_view operation_code) const;
 
-        
-
-        return Common::ALU::AluReplyMessage{};
-    }
-}  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::ALUExecutor
+    };
+ } // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes
