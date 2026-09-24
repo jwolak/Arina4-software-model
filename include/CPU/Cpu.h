@@ -32,9 +32,13 @@
 
  #pragma once
 
+ #include "HerkusBus.hpp"
+
  namespace CPU {
     class Cpu {
     public:
         Cpu();
+
+        Herkus::IHerkusBus& herkus_bus_;
     };
  }
