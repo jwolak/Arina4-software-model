@@ -30,9 +30,9 @@
  *
  */
 
-#include "OperationCodes.h"
+#include "OperationCodes/OperationCodes.h"
 #include "spdlog/spdlog.h"
-#include "OperationCodesType.h"
+#include "OperationCodes/OperationCodesType.h"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit::OperationCodes {
     OperationCodes::OperationCodes() = default;
