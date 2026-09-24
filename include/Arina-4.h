@@ -1,4 +1,3 @@
-
 /*-
  * BSD 3-Clause License
  *
@@ -31,13 +30,23 @@
  *
  */
 
- #include "Arina-4.h"
- #include <iostream>
+ #pragma once
 
-int main() {
-    std::cout << "Hello, Arina4SoftwareModel!" << std::endl;
+ #include <memory>
 
-    Arina4SoftwareModel::arina4::Arina4 arina4_instance;
+ #include "CPU/Cpu.h"
+ #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 
-    return 0;
-}
+ namespace Arina4SoftwareModel::arina4 {
+    class Arina4 {
+    public:
+        explicit Arina4();
+
+    protected:
+        Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu);
+
+    private:
+        std::unique_ptr<CPU::Cpu> cpu_;
+        std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu_;
+    };
+ } // namespace Arina4SoftwareModel::arina4

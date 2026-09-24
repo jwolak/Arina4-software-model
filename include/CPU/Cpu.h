@@ -39,6 +39,6 @@
     public:
         Cpu();
 
-        Herkus::IHerkusBus& herkus_bus_;
+        //Herkus::IHerkusBus& herkus_bus_;
     };
  }

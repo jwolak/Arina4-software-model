@@ -142,6 +142,7 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.cpp
     ${PROJECT_SRC_DIR}/OperationCodes/OperationCodes.cpp
     ${PROJECT_SRC_DIR}/CPU/Cpu.cpp
+    ${PROJECT_SRC_DIR}/Arina-4.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)

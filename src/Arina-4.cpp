@@ -1,4 +1,3 @@
-
 /*-
  * BSD 3-Clause License
  *
@@ -32,12 +31,16 @@
  */
 
  #include "Arina-4.h"
- #include <iostream>
 
-int main() {
-    std::cout << "Hello, Arina4SoftwareModel!" << std::endl;
+ namespace Arina4SoftwareModel::arina4 {
 
-    Arina4SoftwareModel::arina4::Arina4 arina4_instance;
+    Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>())
+    {
+    }
 
-    return 0;
-}
+    Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
+        : cpu_(std::move(cpu)), alu_(std::move(alu))
+    {
+    }
+
+ } // namespace arina4
