@@ -82,6 +82,17 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         return true;
     }
 
+    bool ArithmeticAndLogicalUnit::StartArithmeticAndLogicalUnit() {
+        if (!is_initialized_) {
+            spdlog::error("[ArithmeticAndLogicalUnit] Cannot start: not initialized");
+            return false;
+        }
+        spdlog::info("[ArithmeticAndLogicalUnit] Starting Arithmetic and Logical Unit...");
+        return true;
+    }
+
+    void ArithmeticAndLogicalUnit::StopArithmeticAndLogicalUnit() { spdlog::info("[ArithmeticAndLogicalUnit] Stopping Arithmetic and Logical Unit..."); }
+
     bool ArithmeticAndLogicalUnit::GetIsInitialized() const {
         spdlog::warn("[ArithmeticAndLogicalUnit] GetIsInitialized called, returning {}", is_initialized_);
         return is_initialized_;

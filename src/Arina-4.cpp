@@ -32,6 +32,8 @@
 
 #include "Arina-4.h"
 
+#include "spdlog/spdlog.h"
+
 namespace Arina4SoftwareModel::arina4 {
 
     Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
@@ -40,11 +42,25 @@ namespace Arina4SoftwareModel::arina4 {
         : cpu_(std::move(cpu)), alu_(std::move(alu)) {}
 
     bool Arina4::StartArina4() {
-        cpu_->StartExecution();
-        return true;
+        bool start_success = true;
+
+        if (cpu_->StartExecution() == false) {
+            spdlog::error("[Arina4] Failed to start CPU execution");
+            start_success = false;
+        }
+
+        if (alu_->StartArithmeticAndLogicalUnit() == false) {
+            spdlog::error("[Arina4] Failed to start CPU execution");
+            start_success = false;
+        }
+
+        return start_success;
     }
 
-    void Arina4::StopArina4() { cpu_->StopExecution(); }
+    void Arina4::StopArina4() {
+        cpu_->StopExecution();
+        alu_->StopArithmeticAndLogicalUnit();
+    }
 
     Arina4::~Arina4() {}
 

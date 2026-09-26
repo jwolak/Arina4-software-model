@@ -41,6 +41,8 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
       public:
         explicit ArithmeticAndLogicalUnit();
         bool Initialize();
+        bool StartArithmeticAndLogicalUnit();
+        void StopArithmeticAndLogicalUnit();
 
       protected:
         ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
