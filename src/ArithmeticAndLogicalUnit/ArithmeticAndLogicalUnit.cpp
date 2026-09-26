@@ -98,4 +98,6 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         return is_initialized_;
     }
 
+    void ArithmeticAndLogicalUnit::AluRequestsProcessingLoop() {}
+
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit
