@@ -42,19 +42,25 @@ namespace Arina4SoftwareModel::arina4 {
         : cpu_(std::move(cpu)), alu_(std::move(alu)) {}
 
     bool Arina4::StartArina4() {
-        bool start_success = true;
+        spdlog::info("[Arina4] Starting Arina4");
 
         if (cpu_->StartExecution() == false) {
             spdlog::error("[Arina4] Failed to start CPU execution");
-            start_success = false;
+            return false;
+        }
+
+        if (alu_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start ALU: not initialized");
+            return false;
         }
 
         if (alu_->StartArithmeticAndLogicalUnit() == false) {
-            spdlog::error("[Arina4] Failed to start CPU execution");
-            start_success = false;
+            spdlog::error("[Arina4] Failed to start ALU execution");
+            return false;
         }
 
-        return start_success;
+        spdlog::info("[Arina4] Successfully started Arina4");
+        return true;
     }
 
     void Arina4::StopArina4() {
