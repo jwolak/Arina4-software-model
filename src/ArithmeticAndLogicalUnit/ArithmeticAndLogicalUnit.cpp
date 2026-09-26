@@ -51,28 +51,19 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::debug("[ArithmeticAndLogicalUnit] Received message on topic {}: {}", topic, message_payload.dump());
-            try {
-                Common::ALU::AluRequestMessage alu_request_message;
-                try {
-                    spdlog::debug("[ArithmeticAndLogicalUnit] Attempting to parse ALU request message from JSON");
-                    alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
-                } catch (const nlohmann::json::exception& ex) {
-                    spdlog::error("[ArithmeticAndLogicalUnit] ALU JSON parse error: {}", ex.what());
-                    return;
-                }
+            Common::ALU::AluRequestMessage alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
 
-                spdlog::debug("[ArithmeticAndLogicalUnit] Parsed ALU request message: operation_code={}, acc={}, operand_b={}, operation_sequence_number={}",
-                              alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b,
-                              alu_request_message.operation_sequence_number);
-                Common::ALU::AluReplyMessage resp =
-                    alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
-
-                spdlog::debug("[ArithmeticAndLogicalUnit] ALU execution completed. Publishing response to topic {}: {}", Common::HerkusBusTopics::kAluTopic,
-                              nlohmann::json(resp).dump());
-                herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp));
-            } catch (const std::exception& ex) {
-                spdlog::error("[ArithmeticAndLogicalUnit] Error processing ALU request: {}", ex.what());
+            {
+                spdlog::debug(
+                    "[ArithmeticAndLogicalUnit] Pushing ALU request message to the queue: operation_code={}, acc={}, operand_b={}, "
+                    "operation_sequence_number={}",
+                    alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b, alu_request_message.operation_sequence_number);
+                std::lock_guard<std::mutex> lock(alu_request_processing_thread_mutex_);
+                alu_requests_queue_.push(alu_request_message);
             }
+
+            spdlog::debug("[ArithmeticAndLogicalUnit] Notifying ALU processing loop about new request");
+            alu_request_processing_condition_variable_.notify_one();
         });
 
         is_initialized_ = true;
@@ -82,9 +73,56 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         return true;
     }
 
+    bool ArithmeticAndLogicalUnit::StartArithmeticAndLogicalUnit() {
+        if (!is_initialized_) {
+            spdlog::error("[ArithmeticAndLogicalUnit] Cannot start: not initialized");
+            return false;
+        }
+        spdlog::info("[ArithmeticAndLogicalUnit] Starting Arithmetic and Logical Unit...");
+        stop_alu_request_processing_loop_ = false;
+        alu_thread_ = std::thread(&ArithmeticAndLogicalUnit::AluRequestsProcessingLoop, this);
+        return true;
+    }
+
+    void ArithmeticAndLogicalUnit::StopArithmeticAndLogicalUnit() {
+        spdlog::info("[ArithmeticAndLogicalUnit] Stopping Arithmetic and Logical Unit...");
+        {
+            std::lock_guard<std::mutex> lock(alu_request_processing_thread_mutex_);
+            stop_alu_request_processing_loop_ = true;
+        }
+        alu_request_processing_condition_variable_.notify_one();
+        if (alu_thread_.joinable()) {
+            alu_thread_.join();
+        }
+    }
+
     bool ArithmeticAndLogicalUnit::GetIsInitialized() const {
         spdlog::warn("[ArithmeticAndLogicalUnit] GetIsInitialized called, returning {}", is_initialized_);
         return is_initialized_;
+    }
+
+    void ArithmeticAndLogicalUnit::AluRequestsProcessingLoop() {
+        spdlog::info("[ArithmeticAndLogicalUnit] Starting ALU requests processing loop...");
+        while (!stop_alu_request_processing_loop_) {
+            Common::ALU::AluRequestMessage alu_request_message{};
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(alu_request_processing_thread_mutex_);
+                alu_request_processing_condition_variable_.wait(lock, [this] { return stop_alu_request_processing_loop_ || !alu_requests_queue_.empty(); });
+
+                if (stop_alu_request_processing_loop_) {
+                    return;
+                }
+
+                alu_request_message = alu_requests_queue_.front();
+                alu_requests_queue_.pop();
+            }  // protected by mutex
+
+            Common::ALU::AluReplyMessage alu_request_result =
+                alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, Herkus::json(alu_request_result));
+        }
     }
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

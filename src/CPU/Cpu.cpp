@@ -50,10 +50,10 @@ namespace CPU {
         }
     }
 
-    bool Cpu::StartExecution() {}
+    bool Cpu::StartCpu() {}
 
-    void Cpu::StopExecution() {}
+    void Cpu::StopCpu() {}
 
-    void Cpu::ExecuteInstructionLoop() {}
+    void Cpu::CpuExecuteInstructionLoop() {}
 
 }  // namespace CPU

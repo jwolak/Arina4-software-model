@@ -32,7 +32,13 @@
 
 #pragma once
 
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
+
 #include "ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.h"
+#include "Common/ALU/AluRequestMessage.h"
 #include "HerkusBus.hpp"
 
 namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
@@ -41,15 +47,23 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
       public:
         explicit ArithmeticAndLogicalUnit();
         bool Initialize();
+        bool StartArithmeticAndLogicalUnit();
+        void StopArithmeticAndLogicalUnit();
 
       protected:
         ArithmeticAndLogicalUnit(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor);
         bool GetIsInitialized() const;
+        void AluRequestsProcessingLoop();
 
       private:
         bool is_initialized_;
+        bool stop_alu_request_processing_loop_;
+        std::thread alu_thread_;
+        std::mutex alu_request_processing_thread_mutex_;
+        std::condition_variable alu_request_processing_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
         std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
+        std::queue<Common::ALU::AluRequestMessage> alu_requests_queue_;
     };
 
 }  // namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit

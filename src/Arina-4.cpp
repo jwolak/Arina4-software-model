@@ -32,15 +32,42 @@
 
 #include "Arina-4.h"
 
+#include "spdlog/spdlog.h"
+
 namespace Arina4SoftwareModel::arina4 {
 
     Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
 
     Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
-        : cpu_(std::move(cpu)), alu_(std::move(alu)) {
-        cpu_->StartExecution();
+        : cpu_(std::move(cpu)), alu_(std::move(alu)) {}
+
+    bool Arina4::StartArina4() {
+        spdlog::info("[Arina4] Starting Arina4");
+
+        if (cpu_->StartCpu() == false) {
+            spdlog::error("[Arina4] Failed to start CPU execution");
+            return false;
+        }
+
+        if (alu_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start ALU: not initialized");
+            return false;
+        }
+
+        if (alu_->StartArithmeticAndLogicalUnit() == false) {
+            spdlog::error("[Arina4] Failed to start ALU execution");
+            return false;
+        }
+
+        spdlog::info("[Arina4] Successfully started Arina4");
+        return true;
     }
 
-    Arina4::~Arina4() { cpu_->StopExecution(); }
+    void Arina4::StopArina4() {
+        cpu_->StopCpu();
+        alu_->StopArithmeticAndLogicalUnit();
+    }
+
+    Arina4::~Arina4() {}
 
 }  // namespace Arina4SoftwareModel::arina4
