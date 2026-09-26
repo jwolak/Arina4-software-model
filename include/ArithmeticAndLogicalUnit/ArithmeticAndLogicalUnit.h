@@ -57,10 +57,10 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
 
       private:
         bool is_initialized_;
-        bool stopping_alu_;
+        bool stop_alu_request_processing_loop_;
         std::thread alu_thread_;
-        std::mutex alu_thread_mutex_;
-        std::condition_variable alu_condition_variable_;
+        std::mutex alu_request_processing_thread_mutex_;
+        std::condition_variable alu_request_processing_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
         std::unique_ptr<ALUExecutor::IALUExecutor> alu_executor_;
         std::queue<Common::ALU::AluRequestMessage> alu_requests_queue_;
