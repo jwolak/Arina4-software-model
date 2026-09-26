@@ -44,7 +44,7 @@ namespace Arina4SoftwareModel::arina4 {
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
 
-        if (cpu_->StartExecution() == false) {
+        if (cpu_->StartCpu() == false) {
             spdlog::error("[Arina4] Failed to start CPU execution");
             return false;
         }
@@ -64,7 +64,7 @@ namespace Arina4SoftwareModel::arina4 {
     }
 
     void Arina4::StopArina4() {
-        cpu_->StopExecution();
+        cpu_->StopCpu();
         alu_->StopArithmeticAndLogicalUnit();
     }
 

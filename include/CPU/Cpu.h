@@ -44,11 +44,11 @@ namespace CPU {
       public:
         Cpu();
         ~Cpu();
-        bool StartExecution();
-        void StopExecution();
+        bool StartCpu();
+        void StopCpu();
 
       protected:
-        void ExecuteInstructionLoop();
+        void CpuExecuteInstructionLoop();
 
       private:
         std::thread execute_instruction_thread_;
