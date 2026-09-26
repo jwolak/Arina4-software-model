@@ -37,10 +37,15 @@ namespace Arina4SoftwareModel::arina4 {
     Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
 
     Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
-        : cpu_(std::move(cpu)), alu_(std::move(alu)) {
+        : cpu_(std::move(cpu)), alu_(std::move(alu)) {}
+
+    bool Arina4::StartArina4() {
         cpu_->StartExecution();
+        return true;
     }
 
-    Arina4::~Arina4() { cpu_->StopExecution(); }
+    void Arina4::StopArina4() { cpu_->StopExecution(); }
+
+    Arina4::~Arina4() {}
 
 }  // namespace Arina4SoftwareModel::arina4

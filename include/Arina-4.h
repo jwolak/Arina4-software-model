@@ -42,6 +42,8 @@ namespace Arina4SoftwareModel::arina4 {
       public:
         explicit Arina4();
         ~Arina4();
+        bool StartArina4();
+        void StopArina4();
 
       protected:
         Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu);
