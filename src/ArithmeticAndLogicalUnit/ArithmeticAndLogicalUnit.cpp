@@ -51,28 +51,19 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::debug("[ArithmeticAndLogicalUnit] Received message on topic {}: {}", topic, message_payload.dump());
-            try {
-                Common::ALU::AluRequestMessage alu_request_message;
-                try {
-                    spdlog::debug("[ArithmeticAndLogicalUnit] Attempting to parse ALU request message from JSON");
-                    alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
-                } catch (const nlohmann::json::exception& ex) {
-                    spdlog::error("[ArithmeticAndLogicalUnit] ALU JSON parse error: {}", ex.what());
-                    return;
-                }
+            Common::ALU::AluRequestMessage alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
 
-                spdlog::debug("[ArithmeticAndLogicalUnit] Parsed ALU request message: operation_code={}, acc={}, operand_b={}, operation_sequence_number={}",
-                              alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b,
-                              alu_request_message.operation_sequence_number);
-                Common::ALU::AluReplyMessage resp =
-                    alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
-
-                spdlog::debug("[ArithmeticAndLogicalUnit] ALU execution completed. Publishing response to topic {}: {}", Common::HerkusBusTopics::kAluTopic,
-                              nlohmann::json(resp).dump());
-                herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, nlohmann::json(resp));
-            } catch (const std::exception& ex) {
-                spdlog::error("[ArithmeticAndLogicalUnit] Error processing ALU request: {}", ex.what());
+            {
+                spdlog::debug(
+                    "[ArithmeticAndLogicalUnit] Pushing ALU request message to the queue: operation_code={}, acc={}, operand_b={}, "
+                    "operation_sequence_number={}",
+                    alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b, alu_request_message.operation_sequence_number);
+                std::lock_guard<std::mutex> lock(alu_thread_mutex_);
+                alu_requests_queue_.push(alu_request_message);
             }
+
+            spdlog::debug("[ArithmeticAndLogicalUnit] Notifying ALU processing loop about new request");
+            alu_condition_variable_.notify_one();
         });
 
         is_initialized_ = true;
