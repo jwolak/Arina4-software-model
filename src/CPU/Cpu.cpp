@@ -32,22 +32,61 @@
 
 #include "CPU/Cpu.h"
 
+#include "Common/ALU/AluReplyMessage.h"
+#include "Common/ALU/AluRequestMessage.h"
+#include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 
-namespace CPU {
-    Cpu::Cpu() : execute_instruction_thread_{}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
+namespace Arina4SoftwareModel::CPU {
+    Cpu::Cpu() : Cpu(Herkus::HerkusBus::getInstance()) {}
+
+    Cpu::Cpu(Herkus::IHerkusBus& herkus_bus)
+        : is_initialized_{false},
+          stop_cpu_execution_instruction_loop_{false},
+          cpu_execute_instruction_thread_{},
+          cpu_execute_instruction_mutex_{},
+          cpu_execute_instruction_condition_variable_{},
+          herkus_bus_{herkus_bus} {}
 
     Cpu::~Cpu() {
         {
-            std::lock_guard lock(execute_instruction_mutex_);
-            execute_instruction_stop_flag_ = true;
+            std::lock_guard lock(cpu_execute_instruction_mutex_);
+            stop_cpu_execution_instruction_loop_ = true;
         }
 
-        execute_instruction_condition_.notify_all();
+        cpu_execute_instruction_condition_variable_.notify_all();
 
-        if (execute_instruction_thread_.joinable()) {
-            execute_instruction_thread_.join();
+        if (cpu_execute_instruction_thread_.joinable()) {
+            cpu_execute_instruction_thread_.join();
         }
+    }
+
+    bool Cpu::Initialize() {
+        spdlog::info("[Cpu] Initialize() called...");
+
+        spdlog::info("Subscribe to the Cpu topic on the HerkusBus");
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+            spdlog::debug("[Cpu] Received message on topic {}: {}", topic, message_payload.dump());
+            Common::ALU::AluRequestMessage alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
+
+            {
+                spdlog::debug(
+                    "[Cpu] Pushing ALU request message to the queue: operation_code={}, acc={}, operand_b={}, "
+                    "operation_sequence_number={}",
+                    alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b, alu_request_message.operation_sequence_number);
+                std::lock_guard<std::mutex> lock(cpu_execute_instruction_mutex_);
+                alu_requests_queue_.push(alu_request_message);
+            }
+
+            spdlog::debug("[Cpu] Notifying ALU processing loop about new request");
+            cpu_execute_instruction_condition_variable_.notify_one();
+        });
+
+        is_initialized_ = true;
+        spdlog::debug("[Cpu] is_initialized_ set to true");
+
+        spdlog::info("[Cpu] Cpu initialized successfully");
+        return true;
     }
 
     bool Cpu::StartCpu() {}
@@ -56,4 +95,4 @@ namespace CPU {
 
     void Cpu::CpuExecuteInstructionLoop() {}
 
-}  // namespace CPU
+}  // namespace Arina4SoftwareModel::CPU
