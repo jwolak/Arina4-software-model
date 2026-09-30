@@ -32,28 +32,94 @@
 
 #include "CPU/Cpu.h"
 
+#include "Common/ALU/AluReplyMessage.h"
+#include "Common/ALU/AluRequestMessage.h"
+#include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 
-namespace CPU {
-    Cpu::Cpu() : execute_instruction_thread_{}, execute_instruction_mutex_{}, execute_instruction_condition_{}, execute_instruction_stop_flag_{false} {}
+namespace Arina4SoftwareModel::CPU {
+    Cpu::Cpu() : Cpu(Herkus::HerkusBus::getInstance()) {}
 
-    Cpu::~Cpu() {
-        {
-            std::lock_guard lock(execute_instruction_mutex_);
-            execute_instruction_stop_flag_ = true;
+    Cpu::Cpu(Herkus::IHerkusBus& herkus_bus)
+        : is_initialized_{false},
+          stop_cpu_execution_instruction_loop_{false},
+          cpu_execute_instruction_thread_{},
+          cpu_execute_instruction_mutex_{},
+          cpu_execute_instruction_condition_variable_{},
+          herkus_bus_{herkus_bus} {}
+
+    Cpu::~Cpu() {}
+
+    bool Cpu::Initialize() {
+        spdlog::info("[Cpu] Initialize() called...");
+
+        spdlog::info("Subscribe to the Cpu topic on the HerkusBus");
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+            spdlog::debug("[Cpu] Received message on topic {}: {}", topic, message_payload.dump());
+            Common::ALU::AluReplyMessage alu_reply_message = message_payload.get<Common::ALU::AluReplyMessage>();
+
+            {  // protected by mutex
+                std::lock_guard<std::mutex> lock(cpu_execute_instruction_mutex_);
+                alu_reply_queue_.push(alu_reply_message);
+            }  // protected by mutex
+
+            spdlog::debug("[Cpu] Notifying ALU processing loop about new ALU reply message");
+            cpu_execute_instruction_condition_variable_.notify_one();
+        });
+
+        is_initialized_ = true;
+        spdlog::debug("[Cpu] is_initialized_ set to true");
+
+        spdlog::info("[Cpu] Cpu initialized successfully");
+        return true;
+    }
+
+    bool Cpu::StartCpu() {
+        if (!is_initialized_) {
+            spdlog::error("[Cpu] Cannot start: not initialized");
+            return false;
         }
+        spdlog::info("[Cpu] Starting CPU...");
+        stop_cpu_execution_instruction_loop_ = false;
+        cpu_execute_instruction_thread_ = std::thread(&Cpu::CpuExecuteInstructionLoop, this);
 
-        execute_instruction_condition_.notify_all();
+        return true;
+    }
 
-        if (execute_instruction_thread_.joinable()) {
-            execute_instruction_thread_.join();
+    void Cpu::StopCpu() {
+        {  // protected by mutex
+            std::lock_guard lock(cpu_execute_instruction_mutex_);
+            stop_cpu_execution_instruction_loop_ = true;
+        }  // protected by mutex
+
+        cpu_execute_instruction_condition_variable_.notify_all();
+
+        if (cpu_execute_instruction_thread_.joinable()) {
+            cpu_execute_instruction_thread_.join();
         }
     }
 
-    bool Cpu::StartCpu() {}
+    void Cpu::CpuExecuteInstructionLoop() {
+        spdlog::info("[Cpu] Starting CPU instruction execution loop...");
+        while (!stop_cpu_execution_instruction_loop_) {
+            Common::ALU::AluReplyMessage alu_reply_message{};
 
-    void Cpu::StopCpu() {}
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(cpu_execute_instruction_mutex_);
+                cpu_execute_instruction_condition_variable_.wait(lock, [this] { return stop_cpu_execution_instruction_loop_ || !alu_reply_queue_.empty(); });
 
-    void Cpu::CpuExecuteInstructionLoop() {}
+                if (stop_cpu_execution_instruction_loop_) {
+                    return;
+                }
 
-}  // namespace CPU
+                alu_reply_message = alu_reply_queue_.front();
+                alu_reply_queue_.pop();
+            }  // protected by mutex
+
+            // Process ALU reply message
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, Herkus::json(alu_reply_message));
+        }
+    }
+
+}  // namespace Arina4SoftwareModel::CPU

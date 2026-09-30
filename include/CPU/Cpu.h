@@ -37,25 +37,30 @@
 #include <queue>
 #include <thread>
 
+#include "Common/ALU/AluReplyMessage.h"
+#include "Common/ALU/AluRequestMessage.h"
 #include "HerkusBus.hpp"
 
-namespace CPU {
+namespace Arina4SoftwareModel::CPU {
     class Cpu {
       public:
         Cpu();
         ~Cpu();
+        bool Initialize();
         bool StartCpu();
         void StopCpu();
 
       protected:
+        Cpu(Herkus::IHerkusBus& herkus_bus);
         void CpuExecuteInstructionLoop();
 
       private:
-        std::thread execute_instruction_thread_;
-        std::mutex execute_instruction_mutex_;
-        std::condition_variable execute_instruction_condition_;
-        bool execute_instruction_stop_flag_;
-
-        // Herkus::IHerkusBus& herkus_bus_;
+        bool is_initialized_;
+        bool stop_cpu_execution_instruction_loop_;
+        std::thread cpu_execute_instruction_thread_;
+        std::mutex cpu_execute_instruction_mutex_;
+        std::condition_variable cpu_execute_instruction_condition_variable_;
+        Herkus::IHerkusBus& herkus_bus_;
+        std::queue<Common::ALU::AluReplyMessage> alu_reply_queue_;
     };
-}  // namespace CPU
+}  // namespace Arina4SoftwareModel::CPU
