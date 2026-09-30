@@ -44,6 +44,11 @@ namespace Arina4SoftwareModel::arina4 {
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
 
+        if (cpu_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start CPU: not initialized");
+            return false;
+        }
+
         if (cpu_->StartCpu() == false) {
             spdlog::error("[Arina4] Failed to start CPU execution");
             return false;

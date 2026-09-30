@@ -37,6 +37,7 @@
 #include <queue>
 #include <thread>
 
+#include "Common/ALU/AluReplyMessage.h"
 #include "Common/ALU/AluRequestMessage.h"
 #include "HerkusBus.hpp"
 
@@ -60,6 +61,6 @@ namespace Arina4SoftwareModel::CPU {
         std::mutex cpu_execute_instruction_mutex_;
         std::condition_variable cpu_execute_instruction_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
-        std::queue<Common::ALU::AluRequestMessage> alu_requests_queue_;
+        std::queue<Common::ALU::AluReplyMessage> alu_reply_queue_;
     };
 }  // namespace Arina4SoftwareModel::CPU

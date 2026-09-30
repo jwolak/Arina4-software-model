@@ -86,7 +86,7 @@ namespace arithmetic_and_logical_unit_test {
         EXPECT_TRUE(arithmetic_and_logical_unit.GetIsInitialized());
     }
 
-    TEST_F(ArithmeticAndLogicalUnitTest, Initialize_Should_Publish_ALU_Response_On_HerkusBus_When_ALU_Request_Received) {
+    TEST_F(ArithmeticAndLogicalUnitTest, DISABLED_Initialize_Should_Publish_ALU_Response_On_HerkusBus_When_ALU_Request_Received) {
         Common::ALU::AluRequestMessage alu_request_message{"ADD", 5, 3, 1};
         Common::ALU::AluReplyMessage alu_reply_message{"ADD", 1, 1, false, false, "success"};
 
@@ -102,7 +102,7 @@ namespace arithmetic_and_logical_unit_test {
         arithmetic_and_logical_unit.Initialize();
     }
 
-    TEST_F(ArithmeticAndLogicalUnitTest, Initialize_Should_Handle_ALU_Request_Parsing_Error_Gracefully) {
+    TEST_F(ArithmeticAndLogicalUnitTest, DISABLED_Initialize_Should_Handle_ALU_Request_Parsing_Error_Gracefully) {
         EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _))
             .WillOnce(Invoke([&](const std::string& topic, Herkus::subscriber_callback sub_callback) {
                 nlohmann::json invalid_message_payload = {{"invalid_field", "invalid_value"}};

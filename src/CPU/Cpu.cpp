@@ -48,18 +48,7 @@ namespace Arina4SoftwareModel::CPU {
           cpu_execute_instruction_condition_variable_{},
           herkus_bus_{herkus_bus} {}
 
-    Cpu::~Cpu() {
-        {
-            std::lock_guard lock(cpu_execute_instruction_mutex_);
-            stop_cpu_execution_instruction_loop_ = true;
-        }
-
-        cpu_execute_instruction_condition_variable_.notify_all();
-
-        if (cpu_execute_instruction_thread_.joinable()) {
-            cpu_execute_instruction_thread_.join();
-        }
-    }
+    Cpu::~Cpu() {}
 
     bool Cpu::Initialize() {
         spdlog::info("[Cpu] Initialize() called...");
@@ -67,18 +56,14 @@ namespace Arina4SoftwareModel::CPU {
         spdlog::info("Subscribe to the Cpu topic on the HerkusBus");
         herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::debug("[Cpu] Received message on topic {}: {}", topic, message_payload.dump());
-            Common::ALU::AluRequestMessage alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
+            Common::ALU::AluReplyMessage alu_reply_message = message_payload.get<Common::ALU::AluReplyMessage>();
 
-            {
-                spdlog::debug(
-                    "[Cpu] Pushing ALU request message to the queue: operation_code={}, acc={}, operand_b={}, "
-                    "operation_sequence_number={}",
-                    alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b, alu_request_message.operation_sequence_number);
+            {  // protected by mutex
                 std::lock_guard<std::mutex> lock(cpu_execute_instruction_mutex_);
-                alu_requests_queue_.push(alu_request_message);
-            }
+                alu_reply_queue_.push(alu_reply_message);
+            }  // protected by mutex
 
-            spdlog::debug("[Cpu] Notifying ALU processing loop about new request");
+            spdlog::debug("[Cpu] Notifying ALU processing loop about new ALU reply message");
             cpu_execute_instruction_condition_variable_.notify_one();
         });
 
@@ -89,10 +74,52 @@ namespace Arina4SoftwareModel::CPU {
         return true;
     }
 
-    bool Cpu::StartCpu() {}
+    bool Cpu::StartCpu() {
+        if (!is_initialized_) {
+            spdlog::error("[Cpu] Cannot start: not initialized");
+            return false;
+        }
+        spdlog::info("[Cpu] Starting CPU...");
+        stop_cpu_execution_instruction_loop_ = false;
+        cpu_execute_instruction_thread_ = std::thread(&Cpu::CpuExecuteInstructionLoop, this);
 
-    void Cpu::StopCpu() {}
+        return true;
+    }
 
-    void Cpu::CpuExecuteInstructionLoop() {}
+    void Cpu::StopCpu() {
+        {  // protected by mutex
+            std::lock_guard lock(cpu_execute_instruction_mutex_);
+            stop_cpu_execution_instruction_loop_ = true;
+        }  // protected by mutex
+
+        cpu_execute_instruction_condition_variable_.notify_all();
+
+        if (cpu_execute_instruction_thread_.joinable()) {
+            cpu_execute_instruction_thread_.join();
+        }
+    }
+
+    void Cpu::CpuExecuteInstructionLoop() {
+        spdlog::info("[Cpu] Starting CPU instruction execution loop...");
+        while (!stop_cpu_execution_instruction_loop_) {
+            Common::ALU::AluReplyMessage alu_reply_message{};
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(cpu_execute_instruction_mutex_);
+                cpu_execute_instruction_condition_variable_.wait(lock, [this] { return stop_cpu_execution_instruction_loop_ || !alu_reply_queue_.empty(); });
+
+                if (stop_cpu_execution_instruction_loop_) {
+                    return;
+                }
+
+                alu_reply_message = alu_reply_queue_.front();
+                alu_reply_queue_.pop();
+            }  // protected by mutex
+
+            // Process ALU reply message
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, Herkus::json(alu_reply_message));
+        }
+    }
 
 }  // namespace Arina4SoftwareModel::CPU
