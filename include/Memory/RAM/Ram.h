@@ -30,9 +30,18 @@
  *
  */
 
+#include <cstdint>
+#include <optional>
+#include <vector>
+
 namespace Arina4SoftwareModel::RAM {
     class Ram {
       public:
-        explicit Ram();
+        explicit Ram(std::size_t ram_size);
+        std::optional<std::uint8_t> Read(std::size_t offset) const;
+        bool Write(std::size_t offset, std::uint8_t data);
+
+      private:
+        std::vector<std::uint8_t> ram_data_;
     };
 }  // namespace Arina4SoftwareModel::RAM

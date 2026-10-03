@@ -35,5 +35,22 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::RAM {
-    Ram::Ram() {}
+    Ram::Ram(std::size_t ram_size) : ram_data_(ram_size) {}
+
+    std::optional<std::uint8_t> Ram::Read(std::size_t offset) const {
+        if (offset >= ram_data_.size()) {
+            return std::nullopt;
+        }
+
+        return ram_data_.at(offset);
+    }
+
+    bool Ram::Write(std::size_t offset, std::uint8_t data) {
+        if (offset >= ram_data_.size()) {
+            return false;
+        }
+
+        ram_data_.at(offset) = data;
+        return true;
+    }
 }  // namespace Arina4SoftwareModel::RAM
