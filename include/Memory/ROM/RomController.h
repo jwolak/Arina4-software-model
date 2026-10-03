@@ -35,7 +35,7 @@
 namespace Arina4SoftwareModel::ROM {
     class RomController {
       public:
-        explicit RomController();
+        RomController();
 
       protected:
         explicit RomController(Herkus::IHerkusBus& herkus_bus);

@@ -30,17 +30,27 @@
  *
  */
 
+#include <mutex>
+#include <queue>
+#include <thread>
+
 #include "HerkusBus.hpp"
 
 namespace Arina4SoftwareModel::RAM {
     class RamController {
       public:
-        explicit RamController();
+        RamController();
+        bool Initialize();
+        bool StartRamController();
+        void StopRamController();
 
       protected:
         explicit RamController(Herkus::IHerkusBus& herkus_bus);
 
       private:
+        bool is_initialized_;
         Herkus::IHerkusBus& herkus_bus_;
+        std::queue<uint8_t> ram_cache_;
+        std::mutex ram_cache_mutex_;
     };
 }  // namespace Arina4SoftwareModel::RAM

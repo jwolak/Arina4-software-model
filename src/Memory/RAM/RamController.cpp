@@ -36,4 +36,11 @@ namespace Arina4SoftwareModel::RAM {
     RamController::RamController() : RamController(Herkus::HerkusBus::getInstance()) {}
 
     RamController::RamController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+
+    bool RamController::Initialize() {}
+
+    bool RamController::StartRamController() {}
+
+    void RamController::StopRamController() {}
+
 }  // namespace Arina4SoftwareModel::RAM
