@@ -30,11 +30,10 @@
  *
  */
 
-#pragma once
+#include "Memory/ROM/RomController.h"
 
-namespace Arina4SoftwareModel::Common::HerkusBusTopics {
-    constexpr const char* kAluRequestTopic = "AluRequestTopic";
-    constexpr const char* kAluReplyTopic = "AluReplyTopic";
-    constexpr const char* kRamRequestTopic = "RamRequestTopic";
-    constexpr const char* kRamReplyTopic = "RamReplyTopic";
-}  // namespace Arina4SoftwareModel::Common::HerkusBusTopics
+namespace Arina4SoftwareModel::ROM {
+    RomController::RomController() : RomController(Herkus::HerkusBus::getInstance()) {}
+
+    RomController::RomController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_{herkus_bus} {}
+}  // namespace Arina4SoftwareModel::ROM

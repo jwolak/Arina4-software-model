@@ -32,9 +32,23 @@
 
 #pragma once
 
-namespace Arina4SoftwareModel::Common::HerkusBusTopics {
-    constexpr const char* kAluRequestTopic = "AluRequestTopic";
-    constexpr const char* kAluReplyTopic = "AluReplyTopic";
-    constexpr const char* kRamRequestTopic = "RamRequestTopic";
-    constexpr const char* kRamReplyTopic = "RamReplyTopic";
-}  // namespace Arina4SoftwareModel::Common::HerkusBusTopics
+#include <cstdint>
+
+#include "nlohmann/json.hpp"
+
+namespace Arina4SoftwareModel::Common::Memory {
+    struct DataByteMessage {
+        uint8_t offset;
+        uint8_t value;
+    };
+
+    inline void to_json(nlohmann::json& to_json_obj, const DataByteMessage& data_byte_message) {
+        to_json_obj = nlohmann::json{{"offset", data_byte_message.offset}, {"value", data_byte_message.value}};
+    }
+
+    inline void from_json(const nlohmann::json& from_json_obj, DataByteMessage& data_byte_message) {
+        from_json_obj.at("offset").get_to(data_byte_message.offset);
+        from_json_obj.at("value").get_to(data_byte_message.value);
+    }
+
+}  // namespace Arina4SoftwareModel::Common::Memory

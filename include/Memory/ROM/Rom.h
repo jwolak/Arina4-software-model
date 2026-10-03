@@ -30,11 +30,18 @@
  *
  */
 
-#pragma once
+#include <cstdint>
+#include <optional>
+#include <vector>
 
-namespace Arina4SoftwareModel::Common::HerkusBusTopics {
-    constexpr const char* kAluRequestTopic = "AluRequestTopic";
-    constexpr const char* kAluReplyTopic = "AluReplyTopic";
-    constexpr const char* kRamRequestTopic = "RamRequestTopic";
-    constexpr const char* kRamReplyTopic = "RamReplyTopic";
-}  // namespace Arina4SoftwareModel::Common::HerkusBusTopics
+namespace Arina4SoftwareModel::ROM {
+    class Rom {
+      public:
+        explicit Rom(std::size_t rom_size);
+        std::optional<std::uint8_t> Read(std::size_t offset) const;
+        bool Write(std::size_t offset, std::uint8_t data);
+
+      private:
+        std::vector<std::uint8_t> rom_data_;
+    };
+}  // namespace Arina4SoftwareModel::ROM

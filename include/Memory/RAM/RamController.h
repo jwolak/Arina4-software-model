@@ -30,11 +30,35 @@
  *
  */
 
-#pragma once
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
 
-namespace Arina4SoftwareModel::Common::HerkusBusTopics {
-    constexpr const char* kAluRequestTopic = "AluRequestTopic";
-    constexpr const char* kAluReplyTopic = "AluReplyTopic";
-    constexpr const char* kRamRequestTopic = "RamRequestTopic";
-    constexpr const char* kRamReplyTopic = "RamReplyTopic";
-}  // namespace Arina4SoftwareModel::Common::HerkusBusTopics
+#include "Common/Memory/DataByteMessage.h"
+#include "HerkusBus.hpp"
+#include "Memory/RAM/Ram.h"
+
+namespace Arina4SoftwareModel::RAM {
+    class RamController {
+      public:
+        RamController();
+        bool Initialize();
+        bool StartRamController();
+        void StopRamController();
+
+      protected:
+        explicit RamController(Herkus::IHerkusBus& herkus_bus);
+        void RamControllerLoop();
+
+      private:
+        bool is_initialized_;
+        bool stop_ram_controller_loop_;
+        std::thread ram_controller_thread_;
+        std::mutex ram_cache_mutex_;
+        std::condition_variable ram_cache_condition_variable_;
+        Herkus::IHerkusBus& herkus_bus_;
+        std::queue<Common::Memory::DataByteMessage> ram_cache_;
+        std::unique_ptr<Ram> ram_;
+    };
+}  // namespace Arina4SoftwareModel::RAM
