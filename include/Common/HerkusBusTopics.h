@@ -33,5 +33,6 @@
 #pragma once
 
 namespace Arina4SoftwareModel::Common::HerkusBusTopics {
-    constexpr const char* kAluTopic = "AluTopic";
+    constexpr const char* kAluRequestTopic = "AluRequestTopic";
+    constexpr const char* kAluReplyTopic = "AluReplyTopic";
 }  // namespace Arina4SoftwareModel::Common::HerkusBusTopics

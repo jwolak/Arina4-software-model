@@ -49,7 +49,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         spdlog::info("[ArithmeticAndLogicalUnit] Initialize() called...");
 
         spdlog::info("Subscribe to the ALU topic on the HerkusBus");
-        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluRequestTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::debug("[ArithmeticAndLogicalUnit] Received message on topic {}: {}", topic, message_payload.dump());
             Common::ALU::AluRequestMessage alu_request_message = message_payload.get<Common::ALU::AluRequestMessage>();
 
@@ -121,7 +121,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
             Common::ALU::AluReplyMessage alu_request_result =
                 alu_executor_->Execute(alu_request_message.operation_code, alu_request_message.acc, alu_request_message.operand_b);
 
-            herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, Herkus::json(alu_request_result));
+            herkus_bus_.Publish(Common::HerkusBusTopics::kAluReplyTopic, Herkus::json(alu_request_result));
         }
     }
 

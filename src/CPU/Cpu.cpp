@@ -54,7 +54,7 @@ namespace Arina4SoftwareModel::CPU {
         spdlog::info("[Cpu] Initialize() called...");
 
         spdlog::info("Subscribe to the Cpu topic on the HerkusBus");
-        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kAluReplyTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
             spdlog::debug("[Cpu] Received message on topic {}: {}", topic, message_payload.dump());
             Common::ALU::AluReplyMessage alu_reply_message = message_payload.get<Common::ALU::AluReplyMessage>();
 
@@ -102,6 +102,7 @@ namespace Arina4SoftwareModel::CPU {
     void Cpu::CpuExecuteInstructionLoop() {
         spdlog::info("[Cpu] Starting CPU instruction execution loop...");
         while (!stop_cpu_execution_instruction_loop_) {
+            Common::ALU::AluRequestMessage alu_request_message {};
             Common::ALU::AluReplyMessage alu_reply_message{};
 
             {  // protected by mutex
@@ -112,13 +113,16 @@ namespace Arina4SoftwareModel::CPU {
                     return;
                 }
 
+                alu_request_message = alu_request_queue_.front();
+                alu_request_queue_.pop();
+
                 alu_reply_message = alu_reply_queue_.front();
                 alu_reply_queue_.pop();
             }  // protected by mutex
 
             // Process ALU reply message
 
-            herkus_bus_.Publish(Common::HerkusBusTopics::kAluTopic, Herkus::json(alu_reply_message));
+            herkus_bus_.Publish(Common::HerkusBusTopics::kAluRequestTopic, Herkus::json(alu_request_message));
         }
     }
 

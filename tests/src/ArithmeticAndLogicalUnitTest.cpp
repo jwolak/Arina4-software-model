@@ -76,12 +76,12 @@ namespace arithmetic_and_logical_unit_test {
     }
 
     TEST_F(ArithmeticAndLogicalUnitTest, Initialize_Should_Subscribe_To_ALU_Topic_On_HerkusBus) {
-        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _)).Times(1);
+        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluRequestTopic, _)).Times(1);
         EXPECT_TRUE(arithmetic_and_logical_unit.Initialize());
     }
 
     TEST_F(ArithmeticAndLogicalUnitTest, Initialize_Should_Set_IsInitialized_To_True) {
-        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _)).Times(1);
+        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluRequestTopic, _)).Times(1);
         arithmetic_and_logical_unit.Initialize();
         EXPECT_TRUE(arithmetic_and_logical_unit.GetIsInitialized());
     }
@@ -90,20 +90,20 @@ namespace arithmetic_and_logical_unit_test {
         Common::ALU::AluRequestMessage alu_request_message{"ADD", 5, 3, 1};
         Common::ALU::AluReplyMessage alu_reply_message{"ADD", 1, 1, false, false, "success"};
 
-        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _))
+        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluRequestTopic, _))
             .WillOnce(Invoke([&](const std::string& topic, Herkus::subscriber_callback sub_callback) {
                 nlohmann::json message_payload = alu_request_message;
                 sub_callback(topic, message_payload);
             }));
 
         EXPECT_CALL(*alu_executor_mock, Execute("ADD", 5, 3)).WillOnce(Return(alu_reply_message));
-        EXPECT_CALL(*herkus_bus_mock, Publish(Common::HerkusBusTopics::kAluTopic, nlohmann::json(alu_reply_message))).Times(1);
+        EXPECT_CALL(*herkus_bus_mock, Publish(Common::HerkusBusTopics::kAluRequestTopic, nlohmann::json(alu_reply_message))).Times(1);
 
         arithmetic_and_logical_unit.Initialize();
     }
 
     TEST_F(ArithmeticAndLogicalUnitTest, DISABLED_Initialize_Should_Handle_ALU_Request_Parsing_Error_Gracefully) {
-        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluTopic, _))
+        EXPECT_CALL(*herkus_bus_mock, Subscribe(Common::HerkusBusTopics::kAluRequestTopic, _))
             .WillOnce(Invoke([&](const std::string& topic, Herkus::subscriber_callback sub_callback) {
                 nlohmann::json invalid_message_payload = {{"invalid_field", "invalid_value"}};
                 sub_callback(topic, invalid_message_payload);
