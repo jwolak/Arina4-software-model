@@ -35,7 +35,7 @@
 #include <queue>
 #include <thread>
 
-#include "Common/Memory/DataByte.h"
+#include "Common/Memory/DataByteMessage.h"
 #include "HerkusBus.hpp"
 #include "Memory/RAM/Ram.h"
 
@@ -58,7 +58,7 @@ namespace Arina4SoftwareModel::RAM {
         std::mutex ram_cache_mutex_;
         std::condition_variable ram_cache_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
-        std::queue<Common::Memory::DataByte> ram_cache_;
+        std::queue<Common::Memory::DataByteMessage> ram_cache_;
         std::unique_ptr<Ram> ram_;
     };
 }  // namespace Arina4SoftwareModel::RAM

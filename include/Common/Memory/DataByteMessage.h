@@ -35,7 +35,7 @@
 #include <cstdint>
 
 namespace Arina4SoftwareModel::Common::Memory {
-    struct DataByte {
+    struct DataByteMessage {
         uint8_t offset;
         uint8_t value;
     };
