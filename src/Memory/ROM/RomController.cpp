@@ -30,4 +30,10 @@
  *
  */
 
-namespace Arina4SoftwareModel::ROM {}
+#include "Memory/ROM/RomController.h"
+
+namespace Arina4SoftwareModel::ROM {
+    RomController::RomController() : RomController(Herkus::HerkusBus::getInstance()) {}
+
+    RomController::RomController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_{herkus_bus} {}
+}  // namespace Arina4SoftwareModel::ROM

@@ -30,4 +30,17 @@
  *
  */
 
-namespace Arina4SoftwareModel::RAM {}
+#include "HerkusBus.hpp"
+
+namespace Arina4SoftwareModel::RAM {
+    class RamController {
+      public:
+        explicit RamController();
+
+      protected:
+        explicit RamController(Herkus::IHerkusBus& herkus_bus);
+
+      private:
+        Herkus::IHerkusBus& herkus_bus_;
+    };
+}  // namespace Arina4SoftwareModel::RAM

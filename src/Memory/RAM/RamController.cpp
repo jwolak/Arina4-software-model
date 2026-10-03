@@ -30,4 +30,10 @@
  *
  */
 
-namespace Arina4SoftwareModel::RAM {}
+#include "Memory/RAM/RamController.h"
+
+namespace Arina4SoftwareModel::RAM {
+    RamController::RamController() : RamController(Herkus::HerkusBus::getInstance()) {}
+
+    RamController::RamController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+}  // namespace Arina4SoftwareModel::RAM

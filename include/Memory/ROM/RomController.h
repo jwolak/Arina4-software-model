@@ -30,4 +30,17 @@
  *
  */
 
-namespace Arina4SoftwareModel::ROM {}
+#include "HerkusBus.hpp"
+
+namespace Arina4SoftwareModel::ROM {
+    class RomController {
+      public:
+        explicit RomController();
+
+      protected:
+        explicit RomController(Herkus::IHerkusBus& herkus_bus);
+
+      private:
+        Herkus::IHerkusBus& herkus_bus_;
+    };
+}  // namespace Arina4SoftwareModel::ROM
