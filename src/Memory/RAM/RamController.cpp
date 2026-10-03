@@ -43,4 +43,6 @@ namespace Arina4SoftwareModel::RAM {
 
     void RamController::StopRamController() {}
 
+    void RamController::RamControllerLoop() {}
+
 }  // namespace Arina4SoftwareModel::RAM

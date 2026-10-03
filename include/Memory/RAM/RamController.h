@@ -30,12 +30,14 @@
  *
  */
 
+#include <condition_variable>
 #include <mutex>
 #include <queue>
 #include <thread>
 
 #include "Common/Memory/DataByte.h"
 #include "HerkusBus.hpp"
+#include "Memory/RAM/Ram.h"
 
 namespace Arina4SoftwareModel::RAM {
     class RamController {
@@ -47,11 +49,16 @@ namespace Arina4SoftwareModel::RAM {
 
       protected:
         explicit RamController(Herkus::IHerkusBus& herkus_bus);
+        void RamControllerLoop();
 
       private:
         bool is_initialized_;
-        Herkus::IHerkusBus& herkus_bus_;
+        bool stop_ram_controller_loop_;
+        std::thread ram_controller_thread_;
         std::mutex ram_cache_mutex_;
+        std::condition_variable ram_cache_condition_variable_;
+        Herkus::IHerkusBus& herkus_bus_;
         std::queue<Common::Memory::DataByte> ram_cache_;
+        std::unique_ptr<Ram> ram_;
     };
 }  // namespace Arina4SoftwareModel::RAM
