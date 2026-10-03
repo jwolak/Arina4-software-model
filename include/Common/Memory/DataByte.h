@@ -30,28 +30,13 @@
  *
  */
 
-#include <mutex>
-#include <queue>
-#include <thread>
+#pragma once
 
-#include "Common/Memory/DataByte.h"
-#include "HerkusBus.hpp"
+#include <cstdint>
 
-namespace Arina4SoftwareModel::RAM {
-    class RamController {
-      public:
-        RamController();
-        bool Initialize();
-        bool StartRamController();
-        void StopRamController();
-
-      protected:
-        explicit RamController(Herkus::IHerkusBus& herkus_bus);
-
-      private:
-        bool is_initialized_;
-        Herkus::IHerkusBus& herkus_bus_;
-        std::mutex ram_cache_mutex_;
-        std::queue<Common::Memory::DataByte> ram_cache_;
+namespace Arina4SoftwareModel::Common::Memory {
+    struct DataByte {
+        uint8_t offset;
+        uint8_t value;
     };
-}  // namespace Arina4SoftwareModel::RAM
+}  // namespace Arina4SoftwareModel::Common::Memory
