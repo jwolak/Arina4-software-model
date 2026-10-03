@@ -35,5 +35,22 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ROM {
-    Rom::Rom() {}
+    Rom::Rom(std::size_t rom_size) : rom_data_(rom_size) {}
+
+    std::optional<std::uint8_t> Rom::Read(std::size_t offset) const {
+        if (offset >= rom_data_.size()) {
+            return std::nullopt;
+        }
+
+        return rom_data_.at(offset);
+    }
+
+    bool Rom::Write(std::size_t offset, std::uint8_t data) {
+        if (offset >= rom_data_.size()) {
+            return false;
+        }
+
+        rom_data_.at(offset) = data;
+        return true;
+    }
 }  // namespace Arina4SoftwareModel::ROM
