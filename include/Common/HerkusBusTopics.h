@@ -35,4 +35,6 @@
 namespace Arina4SoftwareModel::Common::HerkusBusTopics {
     constexpr const char* kAluRequestTopic = "AluRequestTopic";
     constexpr const char* kAluReplyTopic = "AluReplyTopic";
+    constexpr const char* kRamRequestTopic = "RamRequestTopic";
+    constexpr const char* kRamReplyTopic = "RamReplyTopic";
 }  // namespace Arina4SoftwareModel::Common::HerkusBusTopics

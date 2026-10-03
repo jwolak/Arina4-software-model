@@ -32,12 +32,37 @@
 
 #include "Memory/RAM/RamController.h"
 
+#include "Common/HerkusBusTopics.h"
+#include "spdlog/spdlog.h"
+
 namespace Arina4SoftwareModel::RAM {
     RamController::RamController() : RamController(Herkus::HerkusBus::getInstance()) {}
 
     RamController::RamController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
 
-    bool RamController::Initialize() {}
+    bool RamController::Initialize() {
+        spdlog::info("[RamController] Initialize() called...");
+
+        spdlog::info("[RamController] Subscribe to the RAM request topic on the HerkusBus");
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kRamRequestTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+            spdlog::debug("[RamController] Received message on topic {}: {}", topic, message_payload.dump());
+            Common::Memory::DataByteMessage data_byte_message = message_payload.get<Common::Memory::DataByteMessage>();
+
+            {  // protected by mutex
+                std::lock_guard<std::mutex> lock(ram_cache_mutex_);
+                ram_cache_.push(data_byte_message);
+            }  // protected by mutex
+
+            spdlog::debug("[RamController] Notifying RAM processing loop about new data byte message");
+            ram_cache_condition_variable_.notify_one();
+        });
+
+        is_initialized_ = true;
+        spdlog::debug("[RamController] is_initialized_ set to true");
+
+        spdlog::info("[RamController] RamController initialized successfully");
+        return true;
+    }
 
     bool RamController::StartRamController() {}
 
