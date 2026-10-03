@@ -30,6 +30,10 @@
  *
  */
 
+#include "Memory/ROM/Rom.h"
+
 #include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::ROM::{}
+namespace Arina4SoftwareModel::ROM {
+    Rom::Rom() {}
+}  // namespace Arina4SoftwareModel::ROM

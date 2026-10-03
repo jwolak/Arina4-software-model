@@ -30,4 +30,9 @@
  *
  */
 
-namespace Arina4SoftwareModel::ROM::{}
+namespace Arina4SoftwareModel::ROM {
+    class Rom {
+      public:
+        explicit Rom();
+    };
+}  // namespace Arina4SoftwareModel::ROM

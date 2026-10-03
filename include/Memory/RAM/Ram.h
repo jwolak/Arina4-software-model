@@ -30,4 +30,9 @@
  *
  */
 
-namespace Arina4SoftwareModel::RAM {}
+namespace Arina4SoftwareModel::RAM {
+    class Ram {
+      public:
+        explicit Ram();
+    };
+}  // namespace Arina4SoftwareModel::RAM

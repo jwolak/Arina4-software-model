@@ -30,6 +30,10 @@
  *
  */
 
+#include "Memory/RAM/Ram.h"
+
 #include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::RAM::{}
+namespace Arina4SoftwareModel::RAM {
+    Ram::Ram() {}
+}  // namespace Arina4SoftwareModel::RAM
