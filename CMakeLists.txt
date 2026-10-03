@@ -141,7 +141,9 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/CPU/Cpu.cpp
     ${PROJECT_SRC_DIR}/Arina-4.cpp
     ${PROJECT_SRC_DIR}/Memory/RAM/Ram.cpp
+    ${PROJECT_SRC_DIR}/Memory/RAM/RamController.cpp
     ${PROJECT_SRC_DIR}/Memory/ROM/Rom.cpp
+    ${PROJECT_SRC_DIR}/Memory/ROM/RomController.cpp
     ${PROJECT_SRC_DIR}/OperationCodes/OperationCodes.cpp
     ${PROJECT_SRC_DIR}/ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.cpp
     ${PROJECT_SRC_DIR}/ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.cpp
