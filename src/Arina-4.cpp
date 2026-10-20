@@ -36,10 +36,13 @@
 
 namespace Arina4SoftwareModel::arina4 {
 
-    Arina4::Arina4() : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>()) {}
+    Arina4::Arina4()
+        : Arina4(std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>(), std::make_unique<RAM::RamController>(),
+                 std::make_unique<ROM::RomController>()) {}
 
-    Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu)
-        : cpu_(std::move(cpu)), alu_(std::move(alu)) {}
+    Arina4::Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu,
+                   std::unique_ptr<RAM::RamController> ram_controller, std::unique_ptr<ROM::RomController> rom_controller)
+        : cpu_(std::move(cpu)), alu_(std::move(alu)), ram_controller_(std::move(ram_controller)), rom_controller_(std::move(rom_controller)) {}
 
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
@@ -64,6 +67,26 @@ namespace Arina4SoftwareModel::arina4 {
             return false;
         }
 
+        if (ram_controller_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start RAM controller: not initialized");
+            return false;
+        }
+
+        if (ram_controller_->StartRamController() == false) {
+            spdlog::error("[Arina4] Failed to start RAM controller execution");
+            return false;
+        }
+
+        if (rom_controller_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start ROM controller: not initialized");
+            return false;
+        }
+
+        if (rom_controller_->StartRomController() == false) {
+            spdlog::error("[Arina4] Failed to start ROM controller execution");
+            return false;
+        }
+
         spdlog::info("[Arina4] Successfully started Arina4");
         return true;
     }
@@ -71,6 +94,8 @@ namespace Arina4SoftwareModel::arina4 {
     void Arina4::StopArina4() {
         cpu_->StopCpu();
         alu_->StopArithmeticAndLogicalUnit();
+        ram_controller_->StopRamController();
+        rom_controller_->StopRomController();
     }
 
     Arina4::~Arina4() {}
