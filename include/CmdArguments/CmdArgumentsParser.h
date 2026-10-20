@@ -33,16 +33,24 @@
 
 #pragma once
 
+#include <memory>
+
 #include "CmdArguments.h"
+#include "CmdArgumentsParserLogic.h"
 
 namespace Arina4SoftwareModel::Cmd {
     class CmdArgumentsParser {
       public:
-        CmdArgumentsParser(int argc, char* argv[]);
+        explicit CmdArgumentsParser(int argc, char* argv[]);
         bool Parse();
+
+      protected:
+        /* For tests purpose only */
+        CmdArgumentsParser(int argc, char* argv[], std::unique_ptr<CmdArgumentsParserLogic> cmd_arguments_parser_logic);
 
       private:
         int m_argc;
         char** m_argv;
+        std::unique_ptr<CmdArgumentsParserLogic> cmd_arguments_parser_logic_;
     };
 }  // namespace Arina4SoftwareModel::Cmd

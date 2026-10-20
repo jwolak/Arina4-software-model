@@ -33,7 +33,11 @@
 #include "CmdArguments/CmdArgumentsParser.h"
 
 namespace Arina4SoftwareModel::Cmd {
-    CmdArgumentsParser::CmdArgumentsParser(int argc, char* argv[]) : m_argc(argc), m_argv(argv) {}
+    CmdArgumentsParser::CmdArgumentsParser(int argc, char* argv[]) : CmdArgumentsParser(argc, argv, std::make_unique<CmdArgumentsParserLogic>()) {}
+
+    /* For tests purpose only */
+    CmdArgumentsParser::CmdArgumentsParser(int argc, char* argv[], std::unique_ptr<CmdArgumentsParserLogic> cmd_arguments_parser_logic)
+        : m_argc(argc), m_argv(argv), cmd_arguments_parser_logic_(std::move(cmd_arguments_parser_logic)) {}
 
     bool CmdArgumentsParser::Parse() {}
 }  // namespace Arina4SoftwareModel::Cmd
