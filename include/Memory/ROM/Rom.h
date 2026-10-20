@@ -31,6 +31,7 @@
  */
 
 #include <cstdint>
+#include <mutex>
 #include <optional>
 #include <vector>
 
@@ -43,5 +44,6 @@ namespace Arina4SoftwareModel::ROM {
 
       private:
         std::vector<std::uint8_t> rom_data_;
+        mutable std::mutex rom_access_mtx_;
     };
 }  // namespace Arina4SoftwareModel::ROM
