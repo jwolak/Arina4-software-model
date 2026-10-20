@@ -42,7 +42,7 @@ namespace Arina4SoftwareModel::Cmd {
     class CmdArgumentsParser {
       public:
         explicit CmdArgumentsParser(int argc, char* argv[]);
-        bool Parse();
+        bool Parse(std::shared_ptr<CmdArguments> cmd_arguments);
 
       protected:
         /* For tests purpose only */
