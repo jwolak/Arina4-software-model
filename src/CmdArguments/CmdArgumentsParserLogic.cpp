@@ -57,7 +57,7 @@ namespace Arina4SoftwareModel::Cmd {
                 "\nOptions:\n"
                 "  -h, --help                 Show this help message\n"
                 "  -v, --version              Show version information\n"
-                "  -D, --debug                Enable debug mode\n"
+                "  -d, --debug                Enable debug mode\n"
                 "  -i, --input <file>         Input assembly source file\n"
                 "\nExample:\n"
                 "  Arina4 -i code.hex\n");
