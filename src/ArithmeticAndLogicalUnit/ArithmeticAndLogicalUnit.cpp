@@ -69,7 +69,7 @@ namespace Arina4SoftwareModel::ArithmeticAndLogicalUnit {
         is_initialized_ = true;
         spdlog::debug("[ArithmeticAndLogicalUnit] is_initialized_ set to true");
 
-        spdlog::info("[ArithmeticAndLogicalUnit] sArithmeticAndLogicalUnit initialized successfully");
+        spdlog::info("[ArithmeticAndLogicalUnit] ArithmeticAndLogicalUnit initialized successfully");
         return true;
     }
 
