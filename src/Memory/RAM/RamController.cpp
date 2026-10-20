@@ -33,12 +33,21 @@
 #include "Memory/RAM/RamController.h"
 
 #include "Common/HerkusBusTopics.h"
+#include "Common/Memory/CommonMemory.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::RAM {
-    RamController::RamController() : RamController(Herkus::HerkusBus::getInstance()) {}
+    RamController::RamController() : RamController(Herkus::HerkusBus::getInstance(), std::make_unique<Ram>(Common::Memory::kRamSize)) {}
 
-    RamController::RamController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+    RamController::RamController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Ram> ram)
+        : is_initialized_{false},
+          stop_ram_controller_loop_{false},
+          ram_controller_thread_{},
+          ram_cache_mutex_{},
+          ram_cache_condition_variable_{},
+          herkus_bus_(herkus_bus),
+          ram_cache_{},
+          ram_(std::move(ram)) {}
 
     bool RamController::Initialize() {
         spdlog::info("[RamController] Initialize() called...");

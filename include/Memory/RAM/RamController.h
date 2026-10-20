@@ -48,7 +48,7 @@ namespace Arina4SoftwareModel::RAM {
         void StopRamController();
 
       protected:
-        explicit RamController(Herkus::IHerkusBus& herkus_bus);
+        explicit RamController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Ram> ram);
         void RamControllerLoop();
 
       private:
