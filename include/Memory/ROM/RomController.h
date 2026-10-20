@@ -30,17 +30,35 @@
  *
  */
 
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
+
+#include "Common/Memory/DataByteMessage.h"
 #include "HerkusBus.hpp"
+#include "Memory/ROM/Rom.h"
 
 namespace Arina4SoftwareModel::ROM {
     class RomController {
       public:
         RomController();
+        bool Initialize();
+        bool StartRomController();
+        void StopRomController();
 
       protected:
-        explicit RomController(Herkus::IHerkusBus& herkus_bus);
+        explicit RomController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Rom> rom);
+        void RomControllerLoop();
 
       private:
+        bool is_initialized_;
+        bool stop_rom_controller_loop_;
+        std::thread rom_controller_thread_;
+        std::mutex rom_cache_mutex_;
+        std::condition_variable rom_cache_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
+        std::queue<Common::Memory::DataByteMessage> rom_cache_;
+        std::unique_ptr<Rom> rom_;
     };
 }  // namespace Arina4SoftwareModel::ROM

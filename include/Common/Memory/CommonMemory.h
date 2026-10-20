@@ -37,6 +37,7 @@
 namespace Arina4SoftwareModel::Common::Memory {
 
     constexpr size_t kRamSize = 1024;
+    constexpr size_t kRomSize = 1024;
 
 }  // namespace Arina4SoftwareModel::Common::Memory
 

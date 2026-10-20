@@ -32,8 +32,103 @@
 
 #include "Memory/ROM/RomController.h"
 
-namespace Arina4SoftwareModel::ROM {
-    RomController::RomController() : RomController(Herkus::HerkusBus::getInstance()) {}
+#include "Common/HerkusBusTopics.h"
+#include "Common/Memory/CommonMemory.h"
+#include "spdlog/spdlog.h"
 
-    RomController::RomController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_{herkus_bus} {}
+namespace Arina4SoftwareModel::ROM {
+    RomController::RomController() : RomController(Herkus::HerkusBus::getInstance(), std::make_unique<Rom>(Common::Memory::kRomSize)) {}
+
+    RomController::RomController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Rom> rom)
+        : is_initialized_{false},
+          stop_rom_controller_loop_{false},
+          rom_controller_thread_{},
+          rom_cache_mutex_{},
+          rom_cache_condition_variable_{},
+          herkus_bus_{herkus_bus},
+          rom_cache_{},
+          rom_{std::move(rom)} {}
+
+    bool RomController::Initialize() {
+        spdlog::info("[RomController] Initialize() called...");
+
+        spdlog::info("[RomController] Subscribe to the ROM request topic on the HerkusBus");
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kRomRequestTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+            spdlog::debug("[RomController] Received message on topic {}: {}", topic, message_payload.dump());
+            Common::Memory::DataByteMessage data_byte_message = message_payload.get<Common::Memory::DataByteMessage>();
+
+            {  // protected by mutex
+                std::lock_guard<std::mutex> lock(rom_cache_mutex_);
+                rom_cache_.push(data_byte_message);
+            }  // protected by mutex
+
+            spdlog::debug("[RomController] Notifying ROM processing loop about new data byte message");
+            rom_cache_condition_variable_.notify_one();
+        });
+
+        is_initialized_ = true;
+        spdlog::debug("[RomController] is_initialized_ set to true");
+
+        spdlog::info("[RomController] RomController initialized successfully");
+        return true;
+    }
+
+    bool RomController::StartRomController() {
+        if (!is_initialized_) {
+            spdlog::error("[RomController] Cannot start: not initialized");
+            return false;
+        }
+
+        spdlog::info("[RomController] Starting ROM controller...");
+        stop_rom_controller_loop_ = false;
+        rom_controller_thread_ = std::thread(&RomController::RomControllerLoop, this);
+        return true;
+    }
+    void RomController::StopRomController() {
+        spdlog::info("[RomController] Stopping ROM controller...");
+        {
+            std::lock_guard<std::mutex> lock(rom_cache_mutex_);
+            stop_rom_controller_loop_ = true;
+        }
+
+        rom_cache_condition_variable_.notify_one();
+        if (rom_controller_thread_.joinable()) {
+            rom_controller_thread_.join();
+        }
+        spdlog::info("[RomController] ROM controller stopped.");
+    }
+    void RomController::RomControllerLoop() {
+        spdlog::info("[RomController] Starting ROM controller processing loop...");
+
+        while (!stop_rom_controller_loop_) {
+            Common::Memory::DataByteMessage data_byte_message;
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(rom_cache_mutex_);
+                rom_cache_condition_variable_.wait(lock, [this] { return stop_rom_controller_loop_ || rom_cache_.empty(); });
+
+                if (stop_rom_controller_loop_) {
+                    return;
+                }
+
+                data_byte_message = rom_cache_.front();
+            }  // protected by mutex
+
+            if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
+                data_byte_message.success = rom_->Write(data_byte_message.offset, data_byte_message.value);
+            }
+
+            if ((data_byte_message.operation == Common::Memory::MemoryOperation::Read)) {
+                std::optional<uint8_t> read_byte = rom_->Read(data_byte_message.offset);
+
+                if (read_byte != std::nullopt) {
+                    data_byte_message.success = true;
+                } else {
+                    data_byte_message.success = false;
+                }
+            }
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kRomReplyTopic, Herkus::json(data_byte_message));
+        }
+    }
 }  // namespace Arina4SoftwareModel::ROM
