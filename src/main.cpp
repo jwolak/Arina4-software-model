@@ -31,13 +31,51 @@
  *
  */
 
- #include "Arina-4.h"
- #include <iostream>
+#include <stdlib.h>
+
+#include <csetjmp>
+#include <csignal>
+#include <cstdio>
+#include <iostream>
+#include <memory>
+
+#include "Arina-4.h"
+
+static jmp_buf sigend_jmp_buf;
+
+static void __attribute__((noreturn)) sigend_handler(int sig) {
+    printf("\n%s %d %s", "Signal", sig, "caught\n");
+    longjmp(sigend_jmp_buf, 1);
+}
+
+void catch_sigend(void (*handler)(int)) {
+#ifdef SIGINT
+    signal(SIGINT, handler);
+#endif
+#ifdef SIGTERM
+    signal(SIGTERM, handler);
+#endif
+#ifdef SIGHUP
+    signal(SIGHUP, handler);
+#endif
+}
 
 int main() {
     std::cout << "Hello, Arina4SoftwareModel!" << std::endl;
 
     Arina4SoftwareModel::arina4::Arina4 arina4_instance;
+
+    if (!arina4_instance.StartArina4()) {
+        std::cerr << "Failed to start Arina4" << std::endl;
+        exit(1);
+    }
+
+    catch_sigend(sigend_handler);
+    if (setjmp(sigend_jmp_buf)) {
+        std::cout << "Signal caught, stopping Arina4" << std::endl;
+        arina4_instance.StopArina4();
+        exit(0);
+    }
 
     return 0;
 }
