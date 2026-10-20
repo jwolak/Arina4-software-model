@@ -31,11 +31,70 @@
  */
 #include "CmdArguments/CmdArgumentsParserLogic.h"
 
+#include <iostream>
+
+#include "spdlog/spdlog.h"
+#include "version.h"
+
 namespace Arina4SoftwareModel::Cmd {
 
+    namespace {
+        constexpr const char* kInputFileExtension = ".hex";
+    }  // namespace
+
     CmdArgumentsParserLogic::CmdArgumentsParserLogic() {}
-    void CmdArgumentsParserLogic::PrintHelp() const {}
-    void CmdArgumentsParserLogic::PrintVersionInfo() const {}
-    bool CmdArgumentsParserLogic::EnableDebugMode() const { return false; }
-    std::optional<std::string> CmdArgumentsParserLogic::GetInputFileName(const char* optarg) const { return std::nullopt; }
+
+    void CmdArgumentsParserLogic::PrintHelp() const {
+        spdlog::debug("[CmdArgumentsParserLogic] Printing help information");
+
+        std::cout
+            << ("Arina4 - CPU simulator CLI\n"
+                "Version: " +
+                Arina4SoftwareModel::Version::GetVersionString() +
+                "\n"
+                "\nUsage:\n"
+                "  Arina4 [options]\n"
+                "\nOptions:\n"
+                "  -h, --help                 Show this help message\n"
+                "  -v, --version              Show version information\n"
+                "  -D, --debug                Enable debug mode\n"
+                "  -i, --input <file>         Input assembly source file\n"
+                "\nExample:\n"
+                "  Arina4 -i code.hex\n");
+    }
+
+    void CmdArgumentsParserLogic::PrintVersionInfo() const {
+        std::cout
+            << ("Arina4 - CPU simulator CLI\n"
+                "Version: " +
+                Arina4SoftwareModel::Version::GetVersionString() + "\n");
+    }
+
+    bool CmdArgumentsParserLogic::EnableDebugMode() const {
+        std::cout << "Enabling debug mode..." << std::endl;
+        try {
+            spdlog::set_level(spdlog::level::debug);
+        } catch (const std::exception& e) {
+            std::cerr << "Error enabling debug mode: " << e.what() << std::endl;
+            std::cerr << "\033[31mFailed to enable debug mode.\033[0m" << std::endl;
+            return false;
+        }
+
+        spdlog::debug("[CmdArgumentsParserLogic] Debug mode activated");
+        std::cout << "\033[32mDebug mode enabled successfully.\033[0m" << std::endl;
+        return true;
+    }
+
+    std::optional<std::string> CmdArgumentsParserLogic::GetInputFileName(const char* optarg) const {
+        std::cerr << "[CmdArgumentsParserLogic] Retrieving input file name" << std::endl;
+
+        if (optarg) {
+            std::cout << "[CmdArgumentsParserLogic] Input file name provided: " << std::string(optarg) << std::endl;
+            return std::string(optarg);
+        }
+        std::cerr << "[ERROR] Input file name argument is null" << std::endl;
+        std::cerr << "[CmdArgumentsParserLogic] Input file name argument is null." << std::endl;
+
+        return std::nullopt;
+    }
 }  // namespace Arina4SoftwareModel::Cmd
