@@ -84,6 +84,7 @@ namespace Arina4SoftwareModel::ROM {
         rom_controller_thread_ = std::thread(&RomController::RomControllerLoop, this);
         return true;
     }
+
     void RomController::StopRomController() {
         spdlog::info("[RomController] Stopping ROM controller...");
         {
@@ -97,6 +98,7 @@ namespace Arina4SoftwareModel::ROM {
         }
         spdlog::info("[RomController] ROM controller stopped.");
     }
+
     void RomController::RomControllerLoop() {
         spdlog::info("[RomController] Starting ROM controller processing loop...");
 
@@ -105,13 +107,14 @@ namespace Arina4SoftwareModel::ROM {
 
             {  // protected by mutex
                 std::unique_lock<std::mutex> lock(rom_cache_mutex_);
-                rom_cache_condition_variable_.wait(lock, [this] { return stop_rom_controller_loop_ || rom_cache_.empty(); });
+                rom_cache_condition_variable_.wait(lock, [this] { return stop_rom_controller_loop_ || !rom_cache_.empty(); });
 
                 if (stop_rom_controller_loop_) {
                     return;
                 }
 
                 data_byte_message = rom_cache_.front();
+                rom_cache_.pop();
             }  // protected by mutex
 
             if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {

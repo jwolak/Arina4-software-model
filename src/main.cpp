@@ -33,37 +33,36 @@
 
 #include <stdlib.h>
 
-#include <csetjmp>
+#include <atomic>
+#include <chrono>
 #include <csignal>
-#include <cstdio>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 #include "Arina-4.h"
 #include "CmdArguments/CmdArguments.h"
 #include "CmdArguments/CmdArgumentsParser.h"
 
-static jmp_buf sigend_jmp_buf;
+namespace {
+    std::atomic<int> g_signal{0};
 
-static void __attribute__((noreturn)) sigend_handler(int sig) {
-    printf("\n%s %d %s", "Signal", sig, "caught\n");
-    longjmp(sigend_jmp_buf, 1);
-}
+    extern "C" void SignalHandler(int sig) { g_signal.store(sig); }
 
-void catch_sigend(void (*handler)(int)) {
-#ifdef SIGINT
-    signal(SIGINT, handler);
-#endif
-#ifdef SIGTERM
-    signal(SIGTERM, handler);
-#endif
-#ifdef SIGHUP
-    signal(SIGHUP, handler);
-#endif
-}
+    void InstallSignalHandlers() {
+        struct sigaction sa{};
+        sa.sa_handler = SignalHandler;
+        sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+
+        sigaction(SIGINT, &sa, nullptr);
+        sigaction(SIGTERM, &sa, nullptr);
+        sigaction(SIGHUP, &sa, nullptr);
+    }
+}  // namespace
 
 int main(int argc, char* argv[]) {
-    std::cout << "Welcome to Arina4 CPU Software Model!" << std::endl;
+    std::cout << "\n\n***** Welcome to Arina4 CPU Software Model! *****\n\n" << std::endl;
 
     std::shared_ptr<::Arina4SoftwareModel::Cmd::CmdArguments> cmd_arguments = std::make_shared<::Arina4SoftwareModel::Cmd::CmdArguments>();
     Arina4SoftwareModel::Cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
@@ -73,19 +72,22 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
+    InstallSignalHandlers();
+
     Arina4SoftwareModel::arina4::Arina4 arina4_instance(cmd_arguments);
 
     if (!arina4_instance.StartArina4()) {
         std::cerr << "[Arina4SoftwareModel]:Failed to start Arina4" << std::endl;
-        exit(1);
-    }
-
-    catch_sigend(sigend_handler);
-    if (setjmp(sigend_jmp_buf)) {
-        std::cout << "[Arina4SoftwareModel]: Signal caught, stopping Arina4" << std::endl;
         arina4_instance.StopArina4();
-        exit(0);
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    while (g_signal.load() == 0) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    std::cout << "[Arina4SoftwareModel]: Signal " << g_signal.load() << " caught, stopping Arina4" << std::endl;
+    arina4_instance.StopArina4();
+
+    return EXIT_SUCCESS;
 }

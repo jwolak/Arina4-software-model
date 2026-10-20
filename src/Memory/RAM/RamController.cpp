@@ -106,13 +106,14 @@ namespace Arina4SoftwareModel::RAM {
 
             {  // protected by mutex
                 std::unique_lock<std::mutex> lock(ram_cache_mutex_);
-                ram_cache_condition_variable_.wait(lock, [this] { return stop_ram_controller_loop_ || ram_cache_.empty(); });
+                ram_cache_condition_variable_.wait(lock, [this] { return stop_ram_controller_loop_ || !ram_cache_.empty(); });
 
                 if (stop_ram_controller_loop_) {
                     return;
                 }
 
                 data_byte_message = ram_cache_.front();
+                ram_cache_.pop();
             }  // protected by mutex
 
             if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
