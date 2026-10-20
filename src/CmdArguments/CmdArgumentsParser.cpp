@@ -76,7 +76,7 @@ namespace Arina4SoftwareModel::Cmd {
 
                 case 'd':
                     cmd_arguments_parser_logic_->EnableDebugMode();
-                    std::cout << "Debug mode enabled." << std::endl;
+                    std::cout << "[Arina4SoftwareModel]: Debug mode enabled." << std::endl;
                     break;
 
                 case 'i':
@@ -85,7 +85,7 @@ namespace Arina4SoftwareModel::Cmd {
                         std::cerr << "Invalid input file name provided.\n";
                         return false;
                     }
-                    std::cout << "Input file name set to: " + *cmd_arguments->input_program_file_path << std::endl;
+                    std::cout << "[Arina4SoftwareModel]: Input file name set to: " + *cmd_arguments->input_program_file_path << std::endl;
                     input_set = true;
                     break;
 
@@ -103,7 +103,7 @@ namespace Arina4SoftwareModel::Cmd {
             return false;
         }
 
-        std::cout << "Command line arguments parsed successfully." << std::endl;
+        std::cout << "[Arina4SoftwareModel]: Command line arguments parsed successfully." << std::endl;
         return true;
     }
 }  // namespace Arina4SoftwareModel::Cmd

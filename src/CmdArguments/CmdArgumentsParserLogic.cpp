@@ -71,7 +71,7 @@ namespace Arina4SoftwareModel::Cmd {
     }
 
     bool CmdArgumentsParserLogic::EnableDebugMode() const {
-        std::cout << "Enabling debug mode..." << std::endl;
+        std::cout << "[Arina4SoftwareModel]: Enabling debug mode..." << std::endl;
         try {
             spdlog::set_level(spdlog::level::debug);
         } catch (const std::exception& e) {
@@ -86,10 +86,10 @@ namespace Arina4SoftwareModel::Cmd {
     }
 
     std::optional<std::string> CmdArgumentsParserLogic::GetInputFileName(const char* optarg) const {
-        std::cerr << "[CmdArgumentsParserLogic] Retrieving input file name" << std::endl;
+        std::cout << "[Arina4SoftwareModel]: Retrieving input file name" << std::endl;
 
         if (optarg) {
-            std::cout << "[CmdArgumentsParserLogic] Input file name provided: " << std::string(optarg) << std::endl;
+            std::cout << "[Arina4SoftwareModel]: Input file name provided: " << std::string(optarg) << std::endl;
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Input file name argument is null" << std::endl;

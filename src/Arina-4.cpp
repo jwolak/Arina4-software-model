@@ -104,6 +104,6 @@ namespace Arina4SoftwareModel::arina4 {
         rom_controller_->StopRomController();
     }
 
-    Arina4::~Arina4() {}
+    Arina4::~Arina4() { StopArina4(); }
 
 }  // namespace Arina4SoftwareModel::arina4
