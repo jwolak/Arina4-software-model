@@ -31,6 +31,7 @@
  */
 
 #include <cstdint>
+#include <mutex>
 #include <optional>
 #include <vector>
 
@@ -43,5 +44,6 @@ namespace Arina4SoftwareModel::RAM {
 
       private:
         std::vector<std::uint8_t> ram_data_;
+        mutable std::mutex ram_access_mtx_;
     };
 }  // namespace Arina4SoftwareModel::RAM

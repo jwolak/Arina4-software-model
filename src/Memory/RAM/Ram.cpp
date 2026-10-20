@@ -35,13 +35,14 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::RAM {
-    Ram::Ram(std::size_t ram_size) : ram_data_(ram_size) {}
+    Ram::Ram(std::size_t ram_size) : ram_data_(ram_size), ram_access_mtx_{} {}
 
     std::optional<std::uint8_t> Ram::Read(std::size_t offset) const {
         if (offset >= ram_data_.size()) {
             return std::nullopt;
         }
 
+        std::lock_guard<std::mutex> lock(ram_access_mtx_);
         return ram_data_.at(offset);
     }
 
@@ -50,6 +51,7 @@ namespace Arina4SoftwareModel::RAM {
             return false;
         }
 
+        std::lock_guard<std::mutex> lock(ram_access_mtx_);
         ram_data_.at(offset) = data;
         return true;
     }

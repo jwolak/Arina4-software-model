@@ -33,12 +33,21 @@
 #include "Memory/RAM/RamController.h"
 
 #include "Common/HerkusBusTopics.h"
+#include "Common/Memory/CommonMemory.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::RAM {
-    RamController::RamController() : RamController(Herkus::HerkusBus::getInstance()) {}
+    RamController::RamController() : RamController(Herkus::HerkusBus::getInstance(), std::make_unique<Ram>(Common::Memory::kRamSize)) {}
 
-    RamController::RamController(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+    RamController::RamController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Ram> ram)
+        : is_initialized_{false},
+          stop_ram_controller_loop_{false},
+          ram_controller_thread_{},
+          ram_cache_mutex_{},
+          ram_cache_condition_variable_{},
+          herkus_bus_(herkus_bus),
+          ram_cache_{},
+          ram_(std::move(ram)) {}
 
     bool RamController::Initialize() {
         spdlog::info("[RamController] Initialize() called...");
@@ -64,10 +73,64 @@ namespace Arina4SoftwareModel::RAM {
         return true;
     }
 
-    bool RamController::StartRamController() {}
+    bool RamController::StartRamController() {
+        if (!is_initialized_) {
+            spdlog::error("[RamController] Cannot start: not initialized");
+            return false;
+        }
 
-    void RamController::StopRamController() {}
+        spdlog::info("[RamController] Starting Arithmetic and Logical Unit...");
+        stop_ram_controller_loop_ = false;
+        ram_controller_thread_ = std::thread(&RamController::RamControllerLoop, this);
+        return true;
+    }
 
-    void RamController::RamControllerLoop() {}
+    void RamController::StopRamController() {
+        spdlog::info("[RamController] Stopping RAM Controller and Logical Unit...");
+        {
+            std::lock_guard<std::mutex> lock(ram_cache_mutex_);
+            stop_ram_controller_loop_ = true;
+        }
+
+        ram_cache_condition_variable_.notify_one();
+        if (ram_controller_thread_.joinable()) {
+            ram_controller_thread_.join();
+        }
+    }
+
+    void RamController::RamControllerLoop() {
+        spdlog::info("[RamController] Starting RAM controller processing loop...");
+
+        while (!stop_ram_controller_loop_) {
+            Common::Memory::DataByteMessage data_byte_message;
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(ram_cache_mutex_);
+                ram_cache_condition_variable_.wait(lock, [this] { return stop_ram_controller_loop_ || ram_cache_.empty(); });
+
+                if (stop_ram_controller_loop_) {
+                    return;
+                }
+
+                data_byte_message = ram_cache_.front();
+            }  // protected by mutex
+
+            if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
+                data_byte_message.success = ram_->Write(data_byte_message.offset, data_byte_message.value);
+            }
+
+            if ((data_byte_message.operation == Common::Memory::MemoryOperation::Read)) {
+                std::optional<uint8_t> read_byte = ram_->Read(data_byte_message.offset);
+
+                if (read_byte != std::nullopt) {
+                    data_byte_message.success = true;
+                } else {
+                    data_byte_message.success = false;
+                }
+            }
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kRamReplyTopic, Herkus::json(data_byte_message));
+        }
+    }
 
 }  // namespace Arina4SoftwareModel::RAM

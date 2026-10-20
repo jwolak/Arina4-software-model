@@ -35,13 +35,14 @@
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ROM {
-    Rom::Rom(std::size_t rom_size) : rom_data_(rom_size) {}
+    Rom::Rom(std::size_t rom_size) : rom_data_(rom_size), rom_access_mtx_{} {}
 
     std::optional<std::uint8_t> Rom::Read(std::size_t offset) const {
         if (offset >= rom_data_.size()) {
             return std::nullopt;
         }
 
+        std::lock_guard<std::mutex> lock(rom_access_mtx_);
         return rom_data_.at(offset);
     }
 
@@ -50,6 +51,7 @@ namespace Arina4SoftwareModel::ROM {
             return false;
         }
 
+        std::lock_guard<std::mutex> lock(rom_access_mtx_);
         rom_data_.at(offset) = data;
         return true;
     }
