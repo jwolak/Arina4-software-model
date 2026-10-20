@@ -40,6 +40,8 @@
 #include <memory>
 
 #include "Arina-4.h"
+#include "CmdArguments/CmdArguments.h"
+#include "CmdArguments/CmdArgumentsParser.h"
 
 static jmp_buf sigend_jmp_buf;
 
@@ -60,19 +62,27 @@ void catch_sigend(void (*handler)(int)) {
 #endif
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     std::cout << "Hello, Arina4SoftwareModel!" << std::endl;
+
+    std::shared_ptr<::Arina4SoftwareModel::Cmd::CmdArguments> cmd_arguments = std::make_shared<::Arina4SoftwareModel::Cmd::CmdArguments>();
+    Arina4SoftwareModel::Cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
+
+    if (!cmd_arguments_parser.Parse(cmd_arguments)) {
+        std::cerr << "[Arina4SoftwareModel]: Parse input arguments failed" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     Arina4SoftwareModel::arina4::Arina4 arina4_instance;
 
     if (!arina4_instance.StartArina4()) {
-        std::cerr << "Failed to start Arina4" << std::endl;
+        std::cerr << "[Arina4SoftwareModel]:Failed to start Arina4" << std::endl;
         exit(1);
     }
 
     catch_sigend(sigend_handler);
     if (setjmp(sigend_jmp_buf)) {
-        std::cout << "Signal caught, stopping Arina4" << std::endl;
+        std::cout << "[Arina4SoftwareModel]: Signal caught, stopping Arina4" << std::endl;
         arina4_instance.StopArina4();
         exit(0);
     }
