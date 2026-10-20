@@ -34,12 +34,14 @@
 
 #include <cstdint>
 
+#include "MemoryOperation.h"
 #include "nlohmann/json.hpp"
 
 namespace Arina4SoftwareModel::Common::Memory {
     struct DataByteMessage {
         uint8_t offset;
         uint8_t value;
+        MemoryOperation operation;
     };
 
     inline void to_json(nlohmann::json& to_json_obj, const DataByteMessage& data_byte_message) {

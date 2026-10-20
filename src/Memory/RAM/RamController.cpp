@@ -77,6 +77,27 @@ namespace Arina4SoftwareModel::RAM {
 
     void RamController::StopRamController() {}
 
-    void RamController::RamControllerLoop() {}
+    void RamController::RamControllerLoop() {
+        spdlog::info("[RamController] Starting RAM controller processing loop...");
+
+        while (!stop_ram_controller_loop_) {
+            Common::Memory::DataByteMessage data_byte_message;
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(ram_cache_mutex_);
+                ram_cache_condition_variable_.wait(lock, [this] { return stop_ram_controller_loop_ || ram_cache_.empty(); });
+
+                if (stop_ram_controller_loop_) {
+                    return;
+                }
+
+                data_byte_message = ram_cache_.front();
+                if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
+                    ram_->Write(data_byte_message.offset, data_byte_message.value);
+                }
+
+            }  // protected by mutex
+        }
+    }
 
 }  // namespace Arina4SoftwareModel::RAM
