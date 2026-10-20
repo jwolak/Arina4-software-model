@@ -73,9 +73,30 @@ namespace Arina4SoftwareModel::RAM {
         return true;
     }
 
-    bool RamController::StartRamController() {}
+    bool RamController::StartRamController() {
+        if (!is_initialized_) {
+            spdlog::error("[RamController] Cannot start: not initialized");
+            return false;
+        }
 
-    void RamController::StopRamController() {}
+        spdlog::info("[RamController] Starting Arithmetic and Logical Unit...");
+        stop_ram_controller_loop_ = false;
+        ram_controller_thread_ = std::thread(&RamController::RamControllerLoop, this);
+        return true;
+    }
+
+    void RamController::StopRamController() {
+        spdlog::info("[RamController] Stopping RAM Controller and Logical Unit...");
+        {
+            std::lock_guard<std::mutex> lock(ram_cache_mutex_);
+            stop_ram_controller_loop_ = true;
+        }
+
+        ram_cache_condition_variable_.notify_one();
+        if (ram_controller_thread_.joinable()) {
+            ram_controller_thread_.join();
+        }
+    }
 
     void RamController::RamControllerLoop() {
         spdlog::info("[RamController] Starting RAM controller processing loop...");
