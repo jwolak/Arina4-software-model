@@ -42,6 +42,7 @@ namespace Arina4SoftwareModel::Common::Memory {
         uint8_t offset;
         uint8_t value;
         MemoryOperation operation;
+        bool success;
     };
 
     inline void to_json(nlohmann::json& to_json_obj, const DataByteMessage& data_byte_message) {

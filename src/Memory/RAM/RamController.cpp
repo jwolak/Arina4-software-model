@@ -92,11 +92,23 @@ namespace Arina4SoftwareModel::RAM {
                 }
 
                 data_byte_message = ram_cache_.front();
-                if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
-                    ram_->Write(data_byte_message.offset, data_byte_message.value);
-                }
-
             }  // protected by mutex
+
+            if (data_byte_message.operation == Common::Memory::MemoryOperation::Write) {
+                data_byte_message.success = ram_->Write(data_byte_message.offset, data_byte_message.value);
+            }
+
+            if ((data_byte_message.operation == Common::Memory::MemoryOperation::Read)) {
+                std::optional<uint8_t> read_byte = ram_->Read(data_byte_message.offset);
+
+                if (read_byte != std::nullopt) {
+                    data_byte_message.success = true;
+                } else {
+                    data_byte_message.success = false;
+                }
+            }
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kRamReplyTopic, Herkus::json(data_byte_message));
         }
     }
 
