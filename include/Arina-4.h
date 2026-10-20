@@ -36,22 +36,25 @@
 
 #include "ArithmeticAndLogicalUnit/ArithmeticAndLogicalUnit.h"
 #include "CPU/Cpu.h"
+#include "CmdArguments/CmdArguments.h"
 #include "Memory/RAM/RamController.h"
 #include "Memory/ROM/RomController.h"
 
 namespace Arina4SoftwareModel::arina4 {
     class Arina4 {
       public:
-        Arina4();
+        explicit Arina4(std::shared_ptr<Cmd::CmdArguments> cmd_arguments);
         ~Arina4();
         bool StartArina4();
         void StopArina4();
 
       protected:
-        explicit Arina4(std::unique_ptr<CPU::Cpu> cpu, std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu,
-                        std::unique_ptr<RAM::RamController> ram_controller, std::unique_ptr<ROM::RomController> rom_controller);
+        explicit Arina4(std::shared_ptr<Cmd::CmdArguments> cmd_arguments, std::unique_ptr<CPU::Cpu> cpu,
+                        std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu, std::unique_ptr<RAM::RamController> ram_controller,
+                        std::unique_ptr<ROM::RomController> rom_controller);
 
       private:
+        std::shared_ptr<Cmd::CmdArguments> cmd_arguments_;
         std::unique_ptr<CPU::Cpu> cpu_;
         std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu_;
         std::unique_ptr<RAM::RamController> ram_controller_;

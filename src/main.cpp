@@ -63,7 +63,7 @@ void catch_sigend(void (*handler)(int)) {
 }
 
 int main(int argc, char* argv[]) {
-    std::cout << "Hello, Arina4SoftwareModel!" << std::endl;
+    std::cout << "Welcome to Arina4 CPU Software Model!" << std::endl;
 
     std::shared_ptr<::Arina4SoftwareModel::Cmd::CmdArguments> cmd_arguments = std::make_shared<::Arina4SoftwareModel::Cmd::CmdArguments>();
     Arina4SoftwareModel::Cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    Arina4SoftwareModel::arina4::Arina4 arina4_instance;
+    Arina4SoftwareModel::arina4::Arina4 arina4_instance(cmd_arguments);
 
     if (!arina4_instance.StartArina4()) {
         std::cerr << "[Arina4SoftwareModel]:Failed to start Arina4" << std::endl;
