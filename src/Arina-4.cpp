@@ -39,16 +39,17 @@ namespace Arina4SoftwareModel::arina4 {
 
     Arina4::Arina4(std::shared_ptr<Cmd::CmdArguments> cmd_arguments)
         : Arina4(cmd_arguments, std::make_unique<CPU::Cpu>(), std::make_unique<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit>(),
-                 std::make_unique<RAM::RamController>(), std::make_unique<ROM::RomController>()) {}
+                 std::make_unique<RAM::RamController>(), std::make_unique<ROM::RomController>(), std::make_unique<Loader::ProgramLoader>()) {}
 
     Arina4::Arina4(std::shared_ptr<Cmd::CmdArguments> cmd_arguments, std::unique_ptr<CPU::Cpu> cpu,
                    std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu, std::unique_ptr<RAM::RamController> ram_controller,
-                   std::unique_ptr<ROM::RomController> rom_controller)
+                   std::unique_ptr<ROM::RomController> rom_controller, std::unique_ptr<Loader::ProgramLoader> prorgram_loader)
         : cmd_arguments_(cmd_arguments),
           cpu_(std::move(cpu)),
           alu_(std::move(alu)),
           ram_controller_(std::move(ram_controller)),
-          rom_controller_(std::move(rom_controller)) {}
+          rom_controller_(std::move(rom_controller)),
+          prorgram_loader_(std::move(prorgram_loader)) {}
 
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");

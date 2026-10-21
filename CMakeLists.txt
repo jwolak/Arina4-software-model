@@ -149,6 +149,8 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/ArithmeticAndLogicalUnit/ALUExecutor/ALUExecutor.cpp
     ${PROJECT_SRC_DIR}/CmdArguments/CmdArgumentsParser.cpp
     ${PROJECT_SRC_DIR}/CmdArguments/CmdArgumentsParserLogic.cpp
+    ${PROJECT_SRC_DIR}/ProgramLoader/ProgramLoader.cpp
+    ${PROJECT_SRC_DIR}/ProgramLoader/FileHandler.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)

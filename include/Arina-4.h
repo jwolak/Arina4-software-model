@@ -39,6 +39,7 @@
 #include "CmdArguments/CmdArguments.h"
 #include "Memory/RAM/RamController.h"
 #include "Memory/ROM/RomController.h"
+#include "ProgramLoader/ProgramLoader.h"
 
 namespace Arina4SoftwareModel::arina4 {
     class Arina4 {
@@ -51,7 +52,7 @@ namespace Arina4SoftwareModel::arina4 {
       protected:
         explicit Arina4(std::shared_ptr<Cmd::CmdArguments> cmd_arguments, std::unique_ptr<CPU::Cpu> cpu,
                         std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu, std::unique_ptr<RAM::RamController> ram_controller,
-                        std::unique_ptr<ROM::RomController> rom_controller);
+                        std::unique_ptr<ROM::RomController> rom_controller, std::unique_ptr<Loader::ProgramLoader> prorgram_loader);
 
       private:
         std::shared_ptr<Cmd::CmdArguments> cmd_arguments_;
@@ -59,5 +60,6 @@ namespace Arina4SoftwareModel::arina4 {
         std::unique_ptr<ArithmeticAndLogicalUnit::ArithmeticAndLogicalUnit> alu_;
         std::unique_ptr<RAM::RamController> ram_controller_;
         std::unique_ptr<ROM::RomController> rom_controller_;
+        std::unique_ptr<Loader::ProgramLoader> prorgram_loader_;
     };
 }  // namespace Arina4SoftwareModel::arina4
