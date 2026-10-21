@@ -50,14 +50,14 @@ namespace {
     extern "C" void SignalHandler(int sig) { g_signal.store(sig); }
 
     void InstallSignalHandlers() {
-        struct sigaction sa{};
-        sa.sa_handler = SignalHandler;
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = 0;
+        struct sigaction sig_action{};
+        sig_action.sa_handler = SignalHandler;
+        sigemptyset(&sig_action.sa_mask);
+        sig_action.sa_flags = 0;
 
-        sigaction(SIGINT, &sa, nullptr);
-        sigaction(SIGTERM, &sa, nullptr);
-        sigaction(SIGHUP, &sa, nullptr);
+        sigaction(SIGINT, &sig_action, nullptr);
+        sigaction(SIGTERM, &sig_action, nullptr);
+        sigaction(SIGHUP, &sig_action, nullptr);
     }
 }  // namespace
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     Arina4SoftwareModel::arina4::Arina4 arina4_instance(cmd_arguments);
 
     if (!arina4_instance.StartArina4()) {
-        std::cerr << "[Arina4SoftwareModel]:Failed to start Arina4" << std::endl;
+        std::cerr << "[Arina4SoftwareModel]: Failed to start Arina4" << std::endl;
         arina4_instance.StopArina4();
         return EXIT_FAILURE;
     }
