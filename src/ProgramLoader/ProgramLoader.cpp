@@ -32,11 +32,16 @@
 
 #include "ProgramLoader/ProgramLoader.h"
 
+#include <memory>
+
+#include "ProgramLoader/FileHandler.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::Loader {
 
     ProgramLoader::ProgramLoader() {}
+
+    ProgramLoader::ProgramLoader(std::unique_ptr<IFileHandler> file_handler) {}
 
     ProgramLoader::~ProgramLoader() {}
 

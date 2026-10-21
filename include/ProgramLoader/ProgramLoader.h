@@ -32,7 +32,10 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
+
+#include "FileHandler.h"
 
 namespace Arina4SoftwareModel::Loader {
 
@@ -42,6 +45,12 @@ namespace Arina4SoftwareModel::Loader {
         ~ProgramLoader();
 
         bool LoadProgram(const std::string& program_path);
+
+      protected:
+        ProgramLoader(std::unique_ptr<IFileHandler> file_handler);
+
+      private:
+        std::unique_ptr<IFileHandler> file_handler_;
     };
 
 }  // namespace Arina4SoftwareModel::Loader
