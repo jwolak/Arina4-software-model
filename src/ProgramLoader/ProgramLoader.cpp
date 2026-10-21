@@ -39,14 +39,22 @@
 
 namespace Arina4SoftwareModel::Loader {
 
-    ProgramLoader::ProgramLoader() {}
+    ProgramLoader::ProgramLoader() : ProgramLoader(std::make_unique<FileHandler>()) {}
 
-    ProgramLoader::ProgramLoader(std::unique_ptr<IFileHandler> file_handler) {}
-
-    ProgramLoader::~ProgramLoader() {}
+    ProgramLoader::ProgramLoader(std::unique_ptr<IFileHandler> file_handler) : file_handler_{std::move(file_handler)} {}
 
     bool ProgramLoader::LoadProgram(const std::string& program_path) {
-        // Implement the program loading logic here
+        if (program_path.empty()) {
+            spdlog::error("[ProgramLoader] File path is empty");
+            return false;
+        }
+
+        if (!file_handler_->OpenFileToRead(program_path)) {
+            spdlog::error("[ProgramLoader] Failed to open the file: {}", program_path);
+            return false;
+        }
+
+        spdlog::info("[ProgramLoader] Opened file: {}", program_path);
         return true;
     }
 

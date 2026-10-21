@@ -42,7 +42,6 @@ namespace Arina4SoftwareModel::Loader {
     class ProgramLoader {
       public:
         ProgramLoader();
-        ~ProgramLoader();
 
         bool LoadProgram(const std::string& program_path);
 
