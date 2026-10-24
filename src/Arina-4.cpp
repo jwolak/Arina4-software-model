@@ -54,26 +54,6 @@ namespace Arina4SoftwareModel::arina4 {
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
 
-        if (cpu_->Initialize() == false) {
-            spdlog::error("[Arina4] Cannot start CPU: not initialized");
-            return false;
-        }
-
-        if (cpu_->StartCpu() == false) {
-            spdlog::error("[Arina4] Failed to start CPU execution");
-            return false;
-        }
-
-        if (alu_->Initialize() == false) {
-            spdlog::error("[Arina4] Cannot start ALU: not initialized");
-            return false;
-        }
-
-        if (alu_->StartArithmeticAndLogicalUnit() == false) {
-            spdlog::error("[Arina4] Failed to start ALU execution");
-            return false;
-        }
-
         if (ram_controller_->Initialize() == false) {
             spdlog::error("[Arina4] Cannot start RAM controller: not initialized");
             return false;
@@ -91,6 +71,38 @@ namespace Arina4SoftwareModel::arina4 {
 
         if (rom_controller_->StartRomController() == false) {
             spdlog::error("[Arina4] Failed to start ROM controller execution");
+            return false;
+        }
+
+        try {
+            const std::vector<std::uint8_t> program_img = prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path);
+            if (!rom_controller_->LoadImageToRom(program_img)) {
+                spdlog::error("[Arina4] Failed load program image to ROM");
+                return false;
+            }
+
+        } catch (const std::exception& e) {
+            spdlog::error("[Arina4] Failed to load program: {}", e.what());
+            return false;
+        }
+
+        if (cpu_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start CPU: not initialized");
+            return false;
+        }
+
+        if (cpu_->StartCpu() == false) {
+            spdlog::error("[Arina4] Failed to start CPU execution");
+            return false;
+        }
+
+        if (alu_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start ALU: not initialized");
+            return false;
+        }
+
+        if (alu_->StartArithmeticAndLogicalUnit() == false) {
+            spdlog::error("[Arina4] Failed to start ALU execution");
             return false;
         }
 

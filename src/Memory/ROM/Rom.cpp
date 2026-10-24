@@ -32,6 +32,8 @@
 
 #include "Memory/ROM/Rom.h"
 
+#include <algorithm>
+
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::ROM {
@@ -53,6 +55,19 @@ namespace Arina4SoftwareModel::ROM {
 
         std::lock_guard<std::mutex> lock(rom_access_mtx_);
         rom_data_.at(offset) = data;
+        return true;
+    }
+
+    bool Rom::LoadMemoryImage(const std::vector<std::uint8_t>& memory_image) {
+        if (memory_image.size() > rom_data_.size()) {
+            spdlog::error("[ROM] Loaded program image is to large: {} bytes. Max memory size is: {} bytes", memory_image.size(), rom_data_.size());
+            return false;
+        }
+
+        std::lock_guard<std::mutex> lock(rom_access_mtx_);
+        std::fill(rom_data_.begin(), rom_data_.end(), 0);
+        std::copy(memory_image.begin(), memory_image.end(), rom_data_.begin());
+
         return true;
     }
 }  // namespace Arina4SoftwareModel::ROM

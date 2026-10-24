@@ -34,6 +34,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <vector>
 
 #include "Common/Memory/DataByteMessage.h"
 #include "HerkusBus.hpp"
@@ -46,6 +47,7 @@ namespace Arina4SoftwareModel::ROM {
         bool Initialize();
         bool StartRomController();
         void StopRomController();
+        bool LoadImageToRom(const std::vector<std::uint8_t>& memory_image);
 
       protected:
         explicit RomController(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Rom> rom);

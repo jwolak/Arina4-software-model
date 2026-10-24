@@ -134,4 +134,9 @@ namespace Arina4SoftwareModel::ROM {
             herkus_bus_.Publish(Common::HerkusBusTopics::kRomReplyTopic, Herkus::json(data_byte_message));
         }
     }
+
+    bool RomController::LoadImageToRom(const std::vector<std::uint8_t>& memory_image) {
+        spdlog::trace("[RomController] Loading memory image to ROM...");
+        return rom_->LoadMemoryImage(memory_image);
+    }
 }  // namespace Arina4SoftwareModel::ROM
