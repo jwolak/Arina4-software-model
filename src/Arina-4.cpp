@@ -75,7 +75,11 @@ namespace Arina4SoftwareModel::arina4 {
         }
 
         try {
-            const std::vector<std::uint8_t> program = prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path);
+            const std::vector<std::uint8_t> program_img = prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path);
+            if (!rom_controller_->LoadImageToRom(program_img)) {
+                spdlog::error("[Arina4] Failed load program image to ROM");
+                return false;
+            }
 
         } catch (const std::exception& e) {
             spdlog::error("[Arina4] Failed to load program: {}", e.what());
