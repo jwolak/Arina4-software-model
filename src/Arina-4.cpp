@@ -54,8 +54,31 @@ namespace Arina4SoftwareModel::arina4 {
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
 
-        if (prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path) == false) {
-            spdlog::error("[Arina4] Failed to load program");
+        if (ram_controller_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start RAM controller: not initialized");
+            return false;
+        }
+
+        if (ram_controller_->StartRamController() == false) {
+            spdlog::error("[Arina4] Failed to start RAM controller execution");
+            return false;
+        }
+
+        if (rom_controller_->Initialize() == false) {
+            spdlog::error("[Arina4] Cannot start ROM controller: not initialized");
+            return false;
+        }
+
+        if (rom_controller_->StartRomController() == false) {
+            spdlog::error("[Arina4] Failed to start ROM controller execution");
+            return false;
+        }
+
+        try {
+            const std::vector<std::uint8_t> program = prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path);
+
+        } catch (const std::exception& e) {
+            spdlog::error("[Arina4] Failed to load program: {}", e.what());
             return false;
         }
 
@@ -76,26 +99,6 @@ namespace Arina4SoftwareModel::arina4 {
 
         if (alu_->StartArithmeticAndLogicalUnit() == false) {
             spdlog::error("[Arina4] Failed to start ALU execution");
-            return false;
-        }
-
-        if (ram_controller_->Initialize() == false) {
-            spdlog::error("[Arina4] Cannot start RAM controller: not initialized");
-            return false;
-        }
-
-        if (ram_controller_->StartRamController() == false) {
-            spdlog::error("[Arina4] Failed to start RAM controller execution");
-            return false;
-        }
-
-        if (rom_controller_->Initialize() == false) {
-            spdlog::error("[Arina4] Cannot start ROM controller: not initialized");
-            return false;
-        }
-
-        if (rom_controller_->StartRomController() == false) {
-            spdlog::error("[Arina4] Failed to start ROM controller execution");
             return false;
         }
 

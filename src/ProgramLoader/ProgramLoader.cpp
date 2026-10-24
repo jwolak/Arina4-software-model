@@ -32,7 +32,10 @@
 
 #include "ProgramLoader/ProgramLoader.h"
 
+#include <iterator>
 #include <memory>
+#include <stdexcept>
+#include <utility>
 
 #include "ProgramLoader/FileHandler.h"
 #include "spdlog/spdlog.h"
@@ -43,19 +46,31 @@ namespace Arina4SoftwareModel::Loader {
 
     ProgramLoader::ProgramLoader(std::unique_ptr<IFileHandler> file_handler) : file_handler_{std::move(file_handler)} {}
 
-    bool ProgramLoader::LoadProgram(const std::string& program_path) {
+    std::vector<uint8_t> ProgramLoader::LoadProgram(const std::string& program_path) {
         if (program_path.empty()) {
             spdlog::error("[ProgramLoader] File path is empty");
-            return false;
+            throw std::invalid_argument{"Program file path is empty"};
         }
 
         if (!file_handler_->OpenFileToRead(program_path)) {
             spdlog::error("[ProgramLoader] Failed to open the file: {}", program_path);
-            return false;
+            throw std::runtime_error{"Failed to open program file: " + program_path};
         }
 
-        spdlog::info("[ProgramLoader] Opened file: {}", program_path);
-        return true;
+        std::ifstream& file_stream_program_image = file_handler_->GetFileToReadStream();
+        std::vector<std::uint8_t> loaded_program_image;
+        const std::istreambuf_iterator<char> iterator_end;
+
+        for (std::istreambuf_iterator<char> it{file_stream_program_image}; it != iterator_end; ++it) {
+            loaded_program_image.push_back(static_cast<std::uint8_t>(static_cast<unsigned char>(*it)));
+        }
+
+        if (file_stream_program_image.bad()) {
+            throw std::runtime_error{"Failed while reading program file: " + program_path};
+        }
+
+        spdlog::info("[ProgramLoader] Loaded {} bytes from '{}'", loaded_program_image.size(), program_path);
+        return loaded_program_image;
     }
 
 }  // namespace Arina4SoftwareModel::Loader

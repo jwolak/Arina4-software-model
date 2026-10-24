@@ -32,8 +32,10 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "FileHandler.h"
 
@@ -43,7 +45,7 @@ namespace Arina4SoftwareModel::Loader {
       public:
         ProgramLoader();
 
-        bool LoadProgram(const std::string& program_path);
+        std::vector<uint8_t> LoadProgram(const std::string& program_path);
 
       protected:
         ProgramLoader(std::unique_ptr<IFileHandler> file_handler);
