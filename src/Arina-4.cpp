@@ -54,6 +54,11 @@ namespace Arina4SoftwareModel::arina4 {
     bool Arina4::StartArina4() {
         spdlog::info("[Arina4] Starting Arina4");
 
+        if (prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path) == false) {
+            spdlog::error("[Arina4] Failed to load program");
+            return false;
+        }
+
         if (cpu_->Initialize() == false) {
             spdlog::error("[Arina4] Cannot start CPU: not initialized");
             return false;
@@ -91,11 +96,6 @@ namespace Arina4SoftwareModel::arina4 {
 
         if (rom_controller_->StartRomController() == false) {
             spdlog::error("[Arina4] Failed to start ROM controller execution");
-            return false;
-        }
-
-        if (prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path) == false) {
-            spdlog::error("[Arina4] Failed to load program");
             return false;
         }
 

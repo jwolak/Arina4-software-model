@@ -41,6 +41,7 @@ namespace Arina4SoftwareModel::ROM {
         explicit Rom(std::size_t rom_size);
         std::optional<std::uint8_t> Read(std::size_t offset) const;
         bool Write(std::size_t offset, std::uint8_t data);
+        bool LoadMemoryImage(const std::vector<std::uint8_t>& memory_image);
 
       private:
         std::vector<std::uint8_t> rom_data_;
