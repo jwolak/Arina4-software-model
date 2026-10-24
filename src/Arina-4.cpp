@@ -94,6 +94,11 @@ namespace Arina4SoftwareModel::arina4 {
             return false;
         }
 
+        if (prorgram_loader_->LoadProgram(*cmd_arguments_->input_program_file_path) == false) {
+            spdlog::error("[Arina4] Failed to load program");
+            return false;
+        }
+
         spdlog::info("[Arina4] Successfully started Arina4");
         return true;
     }
