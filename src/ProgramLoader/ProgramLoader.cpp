@@ -32,10 +32,14 @@
 
 #include "ProgramLoader/ProgramLoader.h"
 
+#include <charconv>
+#include <cstdint>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ProgramLoader/FileHandler.h"
 #include "spdlog/spdlog.h"
@@ -61,8 +65,23 @@ namespace Arina4SoftwareModel::Loader {
         std::vector<std::uint8_t> loaded_program_image;
         const std::istreambuf_iterator<char> iterator_end;
 
-        for (std::istreambuf_iterator<char> it{file_stream_program_image}; it != iterator_end; ++it) {
-            loaded_program_image.push_back(static_cast<std::uint8_t>(static_cast<unsigned char>(*it)));
+        for (std::string program_token; file_stream_program_image >> program_token;) {
+            if (program_token.starts_with("0x") || program_token.starts_with("0X")) {
+                program_token.erase(0, 2);
+            }
+
+            if (program_token.size() != 2) {
+                throw std::runtime_error{"Expected a two-digit hex byte, got: " + program_token};
+            }
+
+            unsigned int value = 0;
+            const auto [end, error] = std::from_chars(program_token.data(), program_token.data() + program_token.size(), value, 16);
+
+            if (error != std::errc{} || end != program_token.data() + program_token.size() || value > 0xFF) {
+                throw std::runtime_error{"Invalid hex byte: " + program_token};
+            }
+
+            loaded_program_image.push_back(static_cast<std::uint8_t>(value));
         }
 
         if (file_stream_program_image.bad()) {
