@@ -44,13 +44,72 @@ namespace Arina4SoftwareModel::Regs {
           stop_registers_mux_loop_{false},
           registers_mux_thread_{},
           registers_mutex_{},
+          registers_condition_variable_{},
           herkus_bus_(herkus_bus),
           registers_{std::move(registers)},
           registers_mux_cache_{} {}
 
-    bool RegistersMux::Initialize() {}
+    bool RegistersMux::Initialize() {
+        spdlog::info("[RegistersMux] Initialize() called...");
+
+        spdlog::info("[RegistersMux] Subscribe to the RegistersMux request topic on the HerkusBus");
+        herkus_bus_.Subscribe(Common::HerkusBusTopics::kRamRequestTopic, [this](const std::string& topic, const nlohmann::json& message_payload) {
+            spdlog::debug("[RamController] Received message on topic {}: {}", topic, message_payload.dump());
+            Common::Registers::RegisterMessage registers_message = message_payload.get<Common::Registers::RegisterMessage>();
+
+            {  // protected by mutex
+                std::lock_guard<std::mutex> lock(registers_mutex_);
+                registers_mux_cache_.push(registers_message);
+            }  // protected by mutex
+
+            spdlog::debug("[RegistersMux] Notifying RegistersMux processing loop about new data byte message");
+            registers_condition_variable_.notify_one();
+        });
+
+        is_initialized_ = true;
+        spdlog::debug("[RegistersMux] is_initialized_ set to true");
+
+        spdlog::info("[RegistersMux] RegistersMux initialized successfully");
+        return true;
+    }
+
     bool RegistersMux::StartRegistersMux() {}
     void RegistersMux::StopRegistersMux() {}
-    void RegistersMux::RegistersMuxLoop() {}
+
+    void RegistersMux::RegistersMuxLoop() {
+        spdlog::info("[RegistersMux] Starting RAM controller processing loop...");
+
+        while (!stop_registers_mux_loop_) {
+            Common::Registers::RegisterMessage register_message;
+
+            {  // protected by mutex
+                std::unique_lock<std::mutex> lock(registers_mutex_);
+                registers_condition_variable_.wait(lock, [this] { return stop_registers_mux_loop_ || !registers_mux_cache_.empty(); });
+
+                if (stop_registers_mux_loop_) {
+                    return;
+                }
+
+                register_message = registers_mux_cache_.front();
+                registers_mux_cache_.pop();
+            }  // protected by mutex
+
+            if (register_message.operation == Common::Registers::RegisterOperation::Write) {
+                // register_message.success = registers_->Write(register_message.register_idx, register_message.value);
+            }
+
+            if ((register_message.operation == Common::Registers::RegisterOperation::Read)) {
+                // std::optional<uint8_t> read_byte = ram_->Read(register_message.register_idx);
+
+                // if (read_byte != std::nullopt) {
+                //     register_message.success = true;
+                // } else {
+                //     register_message.success = false;
+                // }
+            }
+
+            herkus_bus_.Publish(Common::HerkusBusTopics::kRamReplyTopic, Herkus::json(register_message));
+        }
+    }
 
 }  // namespace Arina4SoftwareModel::Regs

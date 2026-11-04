@@ -40,15 +40,17 @@
 namespace Arina4SoftwareModel::Common::Registers {
     struct RegisterMessage {
         uint8_t value;
+        uint8_t register_idx;
         RegisterOperation operation;
         bool success;
     };
 
     inline void to_json(nlohmann::json& to_json_obj, const RegisterMessage& data_byte_message) {
-        to_json_obj = nlohmann::json{{"value", data_byte_message.value}};
+        to_json_obj = nlohmann::json{{"register_idx", data_byte_message.register_idx}, {"value", data_byte_message.value}};
     }
 
     inline void from_json(const nlohmann::json& from_json_obj, RegisterMessage& data_byte_message) {
+        from_json_obj.at("register_idx").get_to(data_byte_message.register_idx);
         from_json_obj.at("value").get_to(data_byte_message.value);
     }
 
