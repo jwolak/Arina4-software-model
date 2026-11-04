@@ -34,7 +34,7 @@
 
 #include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::registers {
+namespace Arina4SoftwareModel::Regs {
     Registers::Registers() : registers_{} {}
 
     std::array<RegWidth, static_cast<std::size_t>(RegisterIndex::NumberOfRegs)>& Registers::GetRegisters() { return registers_; }
@@ -43,4 +43,4 @@ namespace Arina4SoftwareModel::registers {
 
     void Registers::Write(RegisterIndex reg_idx, RegWidth value) { registers_[static_cast<std::size_t>(reg_idx)] = value; }
 
-}  // namespace Arina4SoftwareModel::registers
+}  // namespace Arina4SoftwareModel::Regs

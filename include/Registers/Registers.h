@@ -38,7 +38,7 @@
 #include "IRegisters.h"
 #include "RegisterIndex.h"
 
-namespace Arina4SoftwareModel::registers {
+namespace Arina4SoftwareModel::Regs {
 
     class Registers : public IRegisters {
       public:
@@ -53,4 +53,4 @@ namespace Arina4SoftwareModel::registers {
       private:
         std::array<RegWidth, static_cast<std::size_t>(RegisterIndex::NumberOfRegs)> registers_;
     };
-}  // namespace Arina4SoftwareModel::registers
+}  // namespace Arina4SoftwareModel::Regs

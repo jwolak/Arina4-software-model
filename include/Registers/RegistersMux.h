@@ -37,7 +37,7 @@
 #include "HerkusBus.hpp"
 #include "Registers.h"
 
-namespace Arina4SoftwareModel::registers_mux {
+namespace Arina4SoftwareModel::Regs {
     class RegistersMux {
       public:
         RegistersMux();
@@ -46,7 +46,7 @@ namespace Arina4SoftwareModel::registers_mux {
         void StopRegistersMux();
 
       protected:
-        explicit RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<registers::IRegisters> registers);
+        explicit RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<Regs::IRegisters> registers);
         void RegistersMuxLoop();
 
       private:
@@ -56,6 +56,6 @@ namespace Arina4SoftwareModel::registers_mux {
         std::mutex registers_mutex_;
         std::condition_variable registers_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
-        std::unique_ptr<registers::IRegisters> registers_;
+        std::unique_ptr<Regs::IRegisters> registers_;
     };
-}  // namespace Arina4SoftwareModel::registers_mux
+}  // namespace Arina4SoftwareModel::Regs

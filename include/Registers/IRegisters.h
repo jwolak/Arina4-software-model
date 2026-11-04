@@ -34,7 +34,7 @@
 
 #include "RegisterIndex.h"
 
-namespace Arina4SoftwareModel::registers {
+namespace Arina4SoftwareModel::Regs {
 
     using RegWidth = uint8_t;
 
@@ -44,4 +44,4 @@ namespace Arina4SoftwareModel::registers {
         virtual RegWidth Read(RegisterIndex reg_idx) = 0;
         virtual void Write(RegisterIndex reg_idx, RegWidth value) = 0;
     };
-}  // namespace Arina4SoftwareModel::registers
+}  // namespace Arina4SoftwareModel::Regs
