@@ -30,14 +30,15 @@
  *
  */
 
-#include "Registers/RegisterMux.h"
+#include "Registers/RegistersMux.h"
 
 #include "spdlog/spdlog.h"
 
-namespace Arina4SoftwareModel::register_mux {
+namespace Arina4SoftwareModel::registers_mux {
 
-    RegisterMux::RegisterMux() : RegisterMux(Herkus::HerkusBus::getInstance()) {}
+    RegistersMux::RegistersMux() : RegistersMux(Herkus::HerkusBus::getInstance(), std::make_unique<registers::Registers>()) {}
 
-    RegisterMux::RegisterMux(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+    RegistersMux::RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<registers::IRegisters> registers)
+        : herkus_bus_(herkus_bus), registers_{std::move(registers)} {}
 
-}  // namespace Arina4SoftwareModel::register_mux
+}  // namespace Arina4SoftwareModel::registers_mux

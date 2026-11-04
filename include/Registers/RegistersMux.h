@@ -32,17 +32,21 @@
 
 #pragma once
 
-#include "HerkusBus.hpp"
+#include <memory>
 
-namespace Arina4SoftwareModel::register_mux {
-    class RegisterMux {
+#include "HerkusBus.hpp"
+#include "Registers.h"
+
+namespace Arina4SoftwareModel::registers_mux {
+    class RegistersMux {
       public:
-        RegisterMux();
+        RegistersMux();
 
       protected:
-        explicit RegisterMux(Herkus::IHerkusBus& herkus_bus);
+        explicit RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<registers::IRegisters> registers);
 
       private:
         Herkus::IHerkusBus& herkus_bus_;
+        std::unique_ptr<registers::IRegisters> registers_;
     };
-}  // namespace Arina4SoftwareModel::register_mux
+}  // namespace Arina4SoftwareModel::registers_mux
