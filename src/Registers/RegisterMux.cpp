@@ -29,3 +29,15 @@
  * SUCH DAMAGE.
  *
  */
+
+#include "Registers/RegisterMux.h"
+
+#include "spdlog/spdlog.h"
+
+namespace Arina4SoftwareModel::register_mux {
+
+    RegisterMux::RegisterMux() : RegisterMux(Herkus::HerkusBus::getInstance()) {}
+
+    RegisterMux::RegisterMux(Herkus::IHerkusBus& herkus_bus) : herkus_bus_(herkus_bus) {}
+
+}  // namespace Arina4SoftwareModel::register_mux

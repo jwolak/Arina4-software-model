@@ -31,11 +31,16 @@
  */
 
 #include "HerkusBus.hpp"
-#include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::register_mux {
     class RegisterMux {
       public:
         RegisterMux();
+
+      protected:
+        explicit RegisterMux(Herkus::IHerkusBus& herkus_bus);
+
+      private:
+        Herkus::IHerkusBus& herkus_bus_;
     };
 }  // namespace Arina4SoftwareModel::register_mux
