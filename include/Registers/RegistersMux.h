@@ -58,7 +58,7 @@ namespace Arina4SoftwareModel::Regs {
         bool is_initialized_;
         bool stop_registers_mux_loop_;
         std::thread registers_mux_thread_;
-        std::mutex registers_mutex_;
+        std::mutex registers_mux_cache_mutex_;
         std::condition_variable registers_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
         std::unique_ptr<Regs::IRegisters> registers_;

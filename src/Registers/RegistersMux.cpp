@@ -43,7 +43,7 @@ namespace Arina4SoftwareModel::Regs {
         : is_initialized_{false},
           stop_registers_mux_loop_{false},
           registers_mux_thread_{},
-          registers_mutex_{},
+          registers_mux_cache_mutex_{},
           registers_condition_variable_{},
           herkus_bus_(herkus_bus),
           registers_{std::move(registers)},
@@ -58,7 +58,7 @@ namespace Arina4SoftwareModel::Regs {
             Common::Registers::RegisterMessage registers_message = message_payload.get<Common::Registers::RegisterMessage>();
 
             {  // protected by mutex
-                std::lock_guard<std::mutex> lock(registers_mutex_);
+                std::lock_guard<std::mutex> lock(registers_mux_cache_mutex_);
                 registers_mux_cache_.push(registers_message);
             }  // protected by mutex
 
@@ -83,7 +83,7 @@ namespace Arina4SoftwareModel::Regs {
             Common::Registers::RegisterMessage register_message;
 
             {  // protected by mutex
-                std::unique_lock<std::mutex> lock(registers_mutex_);
+                std::unique_lock<std::mutex> lock(registers_mux_cache_mutex_);
                 registers_condition_variable_.wait(lock, [this] { return stop_registers_mux_loop_ || !registers_mux_cache_.empty(); });
 
                 if (stop_registers_mux_loop_) {
