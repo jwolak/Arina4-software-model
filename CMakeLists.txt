@@ -151,6 +151,8 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/CmdArguments/CmdArgumentsParserLogic.cpp
     ${PROJECT_SRC_DIR}/ProgramLoader/ProgramLoader.cpp
     ${PROJECT_SRC_DIR}/ProgramLoader/FileHandler.cpp
+    ${PROJECT_SRC_DIR}/Registers/RegistersMux.cpp
+    ${PROJECT_SRC_DIR}/Registers/Registers.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)
