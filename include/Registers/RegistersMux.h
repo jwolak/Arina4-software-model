@@ -32,8 +32,13 @@
 
 #pragma once
 
+#include <condition_variable>
 #include <memory>
+#include <mutex>
+#include <queue>
+#include <thread>
 
+#include "Common/Registers/RegistersMessage.h"
 #include "HerkusBus.hpp"
 #include "Registers.h"
 
@@ -57,5 +62,6 @@ namespace Arina4SoftwareModel::Regs {
         std::condition_variable registers_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
         std::unique_ptr<Regs::IRegisters> registers_;
+        std::queue<Common::Registers::RegisterMessage> registers_mux_cache_;
     };
 }  // namespace Arina4SoftwareModel::Regs

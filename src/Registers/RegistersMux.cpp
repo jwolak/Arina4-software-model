@@ -32,6 +32,7 @@
 
 #include "Registers/RegistersMux.h"
 
+#include "Common/HerkusBusTopics.h"
 #include "spdlog/spdlog.h"
 
 namespace Arina4SoftwareModel::Regs {
@@ -44,7 +45,8 @@ namespace Arina4SoftwareModel::Regs {
           registers_mux_thread_{},
           registers_mutex_{},
           herkus_bus_(herkus_bus),
-          registers_{std::move(registers)} {}
+          registers_{std::move(registers)},
+          registers_mux_cache_{} {}
 
     bool RegistersMux::Initialize() {}
     bool RegistersMux::StartRegistersMux() {}
