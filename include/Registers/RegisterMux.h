@@ -30,6 +30,8 @@
  *
  */
 
+#pragma once
+
 #include "HerkusBus.hpp"
 
 namespace Arina4SoftwareModel::register_mux {

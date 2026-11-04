@@ -30,21 +30,22 @@
  *
  */
 
+#pragma once
+
 #include <array>
 #include <cstdint>
 
+#include "IRegisters.h"
+#include "RegisterIndex.h"
+
 namespace Arina4SoftwareModel::registers {
 
-    enum class RegisterIndex : uint8_t { AC, R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15, NumberOfRegs };
-
-    using RegWidth = uint8_t;
-
-    class Registers {
+    class Registers : public IRegisters {
       public:
         Registers();
 
-        RegWidth Read(RegisterIndex reg_idx);
-        void Write(RegisterIndex reg_idx, RegWidth value);
+        RegWidth Read(RegisterIndex reg_idx) override;
+        void Write(RegisterIndex reg_idx, RegWidth value) override;
 
       protected:
         std::array<RegWidth, static_cast<std::size_t>(RegisterIndex::NumberOfRegs)>& GetRegisters();
