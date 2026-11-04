@@ -41,11 +41,20 @@ namespace Arina4SoftwareModel::registers_mux {
     class RegistersMux {
       public:
         RegistersMux();
+        bool Initialize();
+        bool StartRegistersMux();
+        void StopRegistersMux();
 
       protected:
         explicit RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<registers::IRegisters> registers);
+        void RegistersMuxLoop();
 
       private:
+        bool is_initialized_;
+        bool stop_registers_mux_loop_;
+        std::thread registers_mux_thread_;
+        std::mutex registers_mutex_;
+        std::condition_variable registers_condition_variable_;
         Herkus::IHerkusBus& herkus_bus_;
         std::unique_ptr<registers::IRegisters> registers_;
     };

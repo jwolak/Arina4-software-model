@@ -39,6 +39,16 @@ namespace Arina4SoftwareModel::registers_mux {
     RegistersMux::RegistersMux() : RegistersMux(Herkus::HerkusBus::getInstance(), std::make_unique<registers::Registers>()) {}
 
     RegistersMux::RegistersMux(Herkus::IHerkusBus& herkus_bus, std::unique_ptr<registers::IRegisters> registers)
-        : herkus_bus_(herkus_bus), registers_{std::move(registers)} {}
+        : is_initialized_{false},
+          stop_registers_mux_loop_{false},
+          registers_mux_thread_{},
+          registers_mutex_{},
+          herkus_bus_(herkus_bus),
+          registers_{std::move(registers)} {}
+
+    bool RegistersMux::Initialize() {}
+    bool RegistersMux::StartRegistersMux() {}
+    void RegistersMux::StopRegistersMux() {}
+    void RegistersMux::RegistersMuxLoop() {}
 
 }  // namespace Arina4SoftwareModel::registers_mux
